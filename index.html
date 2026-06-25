@@ -1,0 +1,3450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PELNAP AO GATS - GPdI Alfa Omega Agats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        },
+                        church: {
+                            gold: '#d4a853',
+                            navy: '#1a2a4a',
+                            cream: '#f8f4ed',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        /* ===== GLOBAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: #0f1117;
+            color: #e5e7eb;
+        }
+        body.light {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #818cf8;
+            border-radius: 8px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease, background 0.3s, border-color 0.3s;
+            overflow-y: auto;
+            padding: 1.25rem 0.75rem;
+        }
+        body.dark .sidebar {
+            background: #1a1d27;
+            border-right: 1px solid #2d313e;
+        }
+        body.light .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 0.75rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .sidebar-brand .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .sidebar-brand .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .sidebar-brand h1 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+        body.dark .sidebar-brand h1 {
+            color: #f1f5f9;
+        }
+        body.light .sidebar-brand h1 {
+            color: #1e293b;
+        }
+        .sidebar-brand span {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 400;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-section {
+            margin-top: 1.5rem;
+        }
+        .nav-section-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.4;
+            font-weight: 600;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        body.dark .nav-item {
+            color: #a1a8c2;
+        }
+        body.light .nav-item {
+            color: #475569;
+        }
+        .nav-item:hover {
+            background: rgba(99, 102, 241, 0.12);
+            color: #818cf8;
+        }
+        .nav-item.active {
+            background: rgba(99, 102, 241, 0.18);
+            color: #818cf8;
+            font-weight: 600;
+        }
+        body.dark .nav-item.active {
+            background: rgba(99, 102, 241, 0.20);
+        }
+        body.light .nav-item.active {
+            background: rgba(99, 102, 241, 0.10);
+        }
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .nav-item .badge {
+            margin-left: auto;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.55rem;
+            border-radius: 20px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            padding: 1.5rem 2rem 2rem;
+            transition: margin-left 0.3s;
+        }
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 999;
+                backdrop-filter: blur(2px);
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .topbar-left .menu-toggle {
+            display: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.4rem 0.6rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        body.dark .topbar-left .menu-toggle:hover {
+            background: #2d313e;
+        }
+        body.light .topbar-left .menu-toggle:hover {
+            background: #e5e7eb;
+        }
+        @media (max-width: 1024px) {
+            .topbar-left .menu-toggle {
+                display: block;
+            }
+        }
+
+        .topbar-left h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        body.dark .topbar-left h2 {
+            color: #f1f5f9;
+        }
+        body.light .topbar-left h2 {
+            color: #0f172a;
+        }
+        .topbar-left .subtitle {
+            font-size: 0.8rem;
+            opacity: 0.5;
+            font-weight: 400;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .topbar-right .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+            font-size: 1rem;
+            position: relative;
+        }
+        body.dark .topbar-right .icon-btn {
+            background: #1e212b;
+            color: #c8d0e0;
+        }
+        body.light .topbar-right .icon-btn {
+            background: #ffffff;
+            color: #475569;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+        .topbar-right .icon-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
+        .topbar-right .icon-btn .dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            border: 2px solid transparent;
+        }
+        body.dark .topbar-right .icon-btn .dot {
+            border-color: #1a1d27;
+        }
+        body.light .topbar-right .icon-btn .dot {
+            border-color: #ffffff;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.3rem 0.8rem 0.3rem 0.6rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        body.dark .user-profile:hover {
+            background: #2d313e;
+        }
+        body.light .user-profile:hover {
+            background: #e5e7eb;
+        }
+        .user-profile .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .user-profile .info {
+            display: none;
+        }
+        @media (min-width: 640px) {
+            .user-profile .info {
+                display: block;
+            }
+            .user-profile .info .name {
+                font-size: 0.85rem;
+                font-weight: 500;
+                line-height: 1.2;
+            }
+            body.dark .user-profile .info .name {
+                color: #f1f5f9;
+            }
+            body.light .user-profile .info .name {
+                color: #0f172a;
+            }
+            .user-profile .info .role {
+                font-size: 0.65rem;
+                opacity: 0.5;
+            }
+        }
+
+        /* ===== CARDS ===== */
+        .stat-card {
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        body.dark .stat-card {
+            background: #1a1d27;
+            border: 1px solid #2d313e;
+        }
+        body.light .stat-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        body.dark .stat-card:hover {
+            border-color: #4f46e5;
+        }
+        body.light .stat-card:hover {
+            border-color: #818cf8;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+        }
+        .stat-card .icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+        }
+        .stat-card .icon-wrap.purple {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+        }
+        .stat-card .icon-wrap.green {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .stat-card .icon-wrap.orange {
+            background: rgba(251, 146, 60, 0.15);
+            color: #fb923c;
+        }
+        .stat-card .icon-wrap.blue {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+        .stat-card .icon-wrap.pink {
+            background: rgba(236, 72, 153, 0.15);
+            color: #ec4899;
+        }
+        .stat-card .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        body.dark .stat-card .stat-value {
+            color: #f1f5f9;
+        }
+        body.light .stat-card .stat-value {
+            color: #0f172a;
+        }
+        .stat-card .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            font-weight: 500;
+        }
+        .stat-card .stat-change {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.55rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 0.25rem;
+        }
+        .stat-card .stat-change.up {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .stat-card .stat-change.down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrap {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+        body.dark .table-wrap {
+            background: #1a1d27;
+            border-color: #2d313e;
+        }
+        body.light .table-wrap {
+            background: #ffffff;
+            border-color: #e5e7eb;
+        }
+        .table-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .table-wrap thead {
+            border-bottom: 1px solid transparent;
+        }
+        body.dark .table-wrap thead {
+            border-color: #2d313e;
+        }
+        body.light .table-wrap thead {
+            border-color: #e5e7eb;
+        }
+        .table-wrap th {
+            text-align: left;
+            padding: 0.85rem 1rem;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.5;
+        }
+        .table-wrap td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid transparent;
+        }
+        body.dark .table-wrap td {
+            border-color: #2d313e;
+        }
+        body.light .table-wrap td {
+            border-color: #f1f5f9;
+        }
+        .table-wrap tbody tr:hover {
+            background: rgba(99, 102, 241, 0.04);
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        .status-badge.inactive {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        .status-badge.pending {
+            background: rgba(251, 146, 60, 0.15);
+            color: #fb923c;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #4f46e5;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            color: #818cf8;
+        }
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+        .btn-success {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #2d313e;
+            color: inherit;
+        }
+        body.dark .btn-outline {
+            border-color: #3d4152;
+        }
+        body.light .btn-outline {
+            border-color: #d1d5db;
+        }
+        .btn-outline:hover {
+            border-color: #818cf8;
+            color: #818cf8;
+        }
+        .btn-sm {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+        }
+        .btn-xs {
+            padding: 0.15rem 0.6rem;
+            font-size: 0.65rem;
+            border-radius: 6px;
+        }
+
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.35rem;
+            opacity: 0.7;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.6rem 0.9rem;
+            border-radius: 10px;
+            border: 1.5px solid transparent;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+            outline: none;
+            background: transparent;
+        }
+        body.dark .form-control {
+            background: #13161f;
+            border-color: #2d313e;
+            color: #e5e7eb;
+        }
+        body.light .form-control {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #0f172a;
+        }
+        .form-control:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+        .form-control::placeholder {
+            opacity: 0.4;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            max-width: 640px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 20px;
+            padding: 1.75rem;
+            transition: all 0.3s;
+            animation: modalIn 0.25s ease;
+        }
+        body.dark .modal-box {
+            background: #1a1d27;
+            border: 1px solid #2d313e;
+        }
+        body.light .modal-box {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal-box .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .modal-box .modal-header h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+        body.dark .modal-box .modal-header h3 {
+            color: #f1f5f9;
+        }
+        body.light .modal-box .modal-header h3 {
+            color: #0f172a;
+        }
+        .modal-box .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body.dark .modal-box .modal-close {
+            background: #2d313e;
+            color: #a1a8c2;
+        }
+        body.light .modal-box .modal-close {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .modal-box .modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* ===== CHART PLACEHOLDER ===== */
+        .chart-placeholder {
+            height: 200px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 0.5rem;
+            position: relative;
+        }
+        body.dark .chart-placeholder {
+            background: #13161f;
+        }
+        body.light .chart-placeholder {
+            background: #f8fafc;
+        }
+        .chart-bar {
+            width: 32px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.6s ease;
+            min-height: 8px;
+            position: relative;
+        }
+        .chart-bar .bar-label {
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            opacity: 0.5;
+            white-space: nowrap;
+        }
+        .chart-bar .bar-value {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            padding: 0.85rem 1.2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid transparent;
+        }
+        .toast.success {
+            background: #22c55e;
+            color: #fff;
+            border-color: #16a34a;
+        }
+        .toast.error {
+            background: #ef4444;
+            color: #fff;
+            border-color: #dc2626;
+        }
+        .toast.warning {
+            background: #fb923c;
+            color: #fff;
+            border-color: #f97316;
+        }
+        .toast.info {
+            background: #3b82f6;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .toast .toast-icon {
+            font-size: 1.2rem;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1rem;
+        }
+        .toast .toast-close:hover {
+            opacity: 1;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .sidebar {
+                display: none !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+            .topbar {
+                display: none !important;
+            }
+            .table-wrap {
+                border: 1px solid #ddd !important;
+            }
+            body.dark .table-wrap {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            body.dark .table-wrap td,
+            body.dark .table-wrap th {
+                border-color: #ddd !important;
+                color: #000 !important;
+            }
+            .stat-card {
+                border: 1px solid #ddd !important;
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .stat-card .stat-value {
+                color: #000 !important;
+            }
+            .modal-overlay {
+                display: none !important;
+            }
+            .btn {
+                display: none !important;
+            }
+        }
+
+        /* ===== MISC ===== */
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        @media (max-width: 768px) {
+            .grid-cols-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, transparent 40%, rgba(255, 255, 255, 0.05) 50%, transparent 60%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        body.light .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 40%, #e2e8f0 50%, #f1f5f9 60%);
+            background-size: 200% 100%;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.15;
+            margin-bottom: 1rem;
+        }
+        .empty-state h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .empty-state p {
+            opacity: 0.5;
+            font-size: 0.85rem;
+        }
+
+        /* Scrollable table container */
+        .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Dark mode toggle switch */
+        .theme-toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #2d313e;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: none;
+            flex-shrink: 0;
+        }
+        .theme-toggle.active {
+            background: #4f46e5;
+        }
+        .theme-toggle .thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.3s;
+        }
+        .theme-toggle.active .thumb {
+            transform: translateX(20px);
+        }
+
+        /* Filter chips */
+        .filter-chip {
+            padding: 0.3rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1.5px solid transparent;
+        }
+        body.dark .filter-chip {
+            background: #2d313e;
+            color: #a1a8c2;
+        }
+        body.light .filter-chip {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .filter-chip.active {
+            border-color: #818cf8;
+            color: #818cf8;
+        }
+        .filter-chip:hover {
+            border-color: #818cf8;
+        }
+
+        /* Scrollbar for modal */
+        .modal-box::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-box::-webkit-scrollbar-thumb {
+            background: #818cf8;
+            border-radius: 8px;
+        }
+
+        /* Birthday notification */
+        .birthday-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 10px;
+            background: rgba(236, 72, 153, 0.08);
+            border-left: 3px solid #ec4899;
+            margin-bottom: 0.5rem;
+        }
+        .birthday-item .bday-icon {
+            color: #ec4899;
+            font-size: 1.1rem;
+        }
+        .birthday-item .bday-name {
+            font-weight: 600;
+        }
+        .birthday-item .bday-age {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-left: auto;
+        }
+
+        /* Sub-kelas list */
+        .sub-kelas-list {
+            margin-top: 0.75rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid rgba(99, 102, 241, 0.2);
+        }
+        .sub-kelas-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+        }
+        body.dark .sub-kelas-item {
+            background: #13161f;
+        }
+        body.light .sub-kelas-item {
+            background: #f8fafc;
+        }
+        .sub-kelas-item .usia {
+            opacity: 0.5;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================== -->
+    <!-- TOAST CONTAINER -->
+    <!-- ============================== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================== -->
+    <!-- SIDEBAR OVERLAY (mobile) -->
+    <!-- ============================== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ============================== -->
+    <!-- SIDEBAR -->
+    <!-- ============================== -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <div class="brand-icon" id="brandIcon">
+                <i class="fas fa-church"></i>
+            </div>
+            <div>
+                <h1>PELNAP AO GATS <span>GPdI Alfa Omega Agats</span></h1>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-section">
+            <div class="nav-section-title">Menu Utama</div>
+            <a href="#" class="nav-item active" data-page="dashboard">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="#" class="nav-item" data-page="anak">
+                <i class="fas fa-child"></i> Data Anak
+                <span class="badge" id="totalAnakBadge">0</span>
+            </a>
+            <a href="#" class="nav-item" data-page="kelas">
+                <i class="fas fa-users"></i> Kelas
+            </a>
+            <a href="#" class="nav-item" data-page="guru">
+                <i class="fas fa-chalkboard-teacher"></i> Guru
+            </a>
+            <a href="#" class="nav-item" data-page="absensi">
+                <i class="fas fa-clipboard-check"></i> Absensi
+            </a>
+        </nav>
+
+        <nav class="nav-section">
+            <div class="nav-section-title">Laporan</div>
+            <a href="#" class="nav-item" data-page="laporan">
+                <i class="fas fa-file-alt"></i> Laporan
+            </a>
+            <a href="#" class="nav-item" data-page="export">
+                <i class="fas fa-download"></i> Export Data
+            </a>
+        </nav>
+
+        <nav class="nav-section" style="margin-top:auto;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06);">
+            <a href="#" class="nav-item" data-page="pengaturan">
+                <i class="fas fa-cog"></i> Pengaturan
+            </a>
+            <a href="#" class="nav-item" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+            <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0.75rem;margin-top:0.25rem;">
+                <button class="theme-toggle" id="themeToggle">
+                    <span class="thumb"></span>
+                </button>
+                <span style="font-size:0.75rem;opacity:0.4;">Mode Gelap</span>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ============================== -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================== -->
+    <main class="main-content" id="mainContent">
+
+        <!-- TOPBAR -->
+        <header class="topbar no-print">
+            <div class="topbar-left">
+                <span class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </span>
+                <div>
+                    <h2 id="pageTitle">Dashboard <span class="subtitle">| Ikhtisar</span></h2>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" id="notifBtn" title="Notifikasi">
+                    <i class="fas fa-bell"></i>
+                    <span class="dot"></span>
+                </button>
+                <div class="user-profile" id="userProfile">
+                    <div class="avatar" id="userAvatar">SA</div>
+                    <div class="info">
+                        <div class="name" id="userName">Super Admin</div>
+                        <div class="role" id="userRole">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ======================================== -->
+        <!-- PAGE: DASHBOARD -->
+        <!-- ======================================== -->
+        <section id="page-dashboard" class="page-content fade-in">
+            <!-- Stats -->
+            <div class="grid grid-cols-4 gap-4" style="margin-bottom:1.5rem;">
+                <div class="stat-card">
+                    <div class="icon-wrap purple"><i class="fas fa-child"></i></div>
+                    <div class="stat-value" id="statTotalAnak">0</div>
+                    <div class="stat-label">Total Anak</div>
+                    <span class="stat-change up"><i class="fas fa-arrow-up"></i> 12%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrap green"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="stat-value" id="statTotalGuru">0</div>
+                    <div class="stat-label">Total Guru</div>
+                    <span class="stat-change up"><i class="fas fa-arrow-up"></i> 4%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrap orange"><i class="fas fa-users"></i></div>
+                    <div class="stat-value" id="statTotalKelas">0</div>
+                    <div class="stat-label">Total Kelas</div>
+                    <span class="stat-change up"><i class="fas fa-arrow-up"></i> 8%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="icon-wrap blue"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-value" id="statKehadiranBulan">0</div>
+                    <div class="stat-label">Kehadiran Bulan Ini</div>
+                    <span class="stat-change up"><i class="fas fa-arrow-up"></i> 23%</span>
+                </div>
+            </div>
+
+            <!-- Birthday Notification -->
+            <div class="stat-card" style="margin-bottom:1.5rem;border-left:4px solid #ec4899;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                    <h4 style="font-weight:600;font-size:0.95rem;"><i class="fas fa-birthday-cake" style="color:#ec4899;margin-right:0.5rem;"></i> Ulang Tahun Bulan Ini</h4>
+                    <span style="font-size:0.7rem;opacity:0.4;" id="bdayMonth">-</span>
+                </div>
+                <div id="birthdayList" style="margin-top:0.75rem;">
+                    <div style="opacity:0.4;font-size:0.85rem;text-align:center;padding:0.5rem 0;">Tidak ada anak yang berulang tahun bulan ini</div>
+                </div>
+            </div>
+
+            <!-- Charts + Activity -->
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+                <!-- Chart -->
+                <div class="stat-card" style="padding:1.25rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <h4 style="font-weight:600;font-size:0.95rem;">Pertumbuhan Anak per Kelas</h4>
+                        <span style="font-size:0.7rem;opacity:0.4;">2025</span>
+                    </div>
+                    <div class="chart-placeholder" id="chartGrowth" style="height:180px;">
+                        <!-- Bars will be rendered by JS -->
+                    </div>
+                </div>
+                <!-- Activity -->
+                <div class="stat-card" style="padding:1.25rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <h4 style="font-weight:600;font-size:0.95rem;">Aktivitas Terbaru</h4>
+                        <span style="font-size:0.7rem;opacity:0.4;">Hari ini</span>
+                    </div>
+                    <div id="activityList" style="display:flex;flex-direction:column;gap:0.5rem;">
+                        <!-- Activity items rendered by JS -->
+                        <div style="opacity:0.4;font-size:0.85rem;text-align:center;padding:1rem 0;">Belum ada aktivitas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Children -->
+            <div class="stat-card" style="padding:1.25rem;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+                    <h4 style="font-weight:600;font-size:0.95rem;">Anak Terbaru</h4>
+                    <button class="btn btn-primary btn-sm" onclick="navigateTo('anak')">
+                        <i class="fas fa-plus"></i> Tambah Anak
+                    </button>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Orang Tua</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentChildrenTable">
+                            <tr><td colspan="4" style="text-align:center;opacity:0.4;padding:1.5rem;">Belum ada data</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: DATA ANAK -->
+        <!-- ======================================== -->
+        <section id="page-anak" class="page-content fade-in" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+                    <input class="form-control" id="searchAnak" placeholder="Cari nama, orang tua, HP..." style="width:220px;padding:0.45rem 0.8rem;font-size:0.8rem;" />
+                    <select class="form-control" id="filterKelasAnak" style="width:140px;padding:0.45rem 0.8rem;font-size:0.8rem;">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <select class="form-control" id="filterStatusAnak" style="width:130px;padding:0.45rem 0.8rem;font-size:0.8rem;">
+                        <option value="">Semua Status</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Tidak Aktif">Tidak Aktif</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="printAnak()"><i class="fas fa-print"></i> Print</button>
+                    <button class="btn btn-primary" onclick="openModal('modalAnak')">
+                        <i class="fas fa-plus"></i> Tambah Anak
+                    </button>
+                </div>
+            </div>
+            <div class="stat-card" style="padding:0;">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NIK</th>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Orang Tua</th>
+                                <th>HP</th>
+                                <th>Status</th>
+                                <th style="text-align:center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="anakTableBody">
+                            <tr><td colspan="7" style="text-align:center;padding:2rem;opacity:0.4;">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1rem;border-top:1px solid transparent;">
+                    <span style="font-size:0.8rem;opacity:0.4;" id="anakPaginationInfo">Menampilkan 0 data</span>
+                    <div style="display:flex;gap:0.25rem;" id="anakPaginationButtons"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: KELAS (dengan sub-kelas) -->
+        <!-- ======================================== -->
+        <section id="page-kelas" class="page-content fade-in" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
+                <h3 style="font-weight:600;font-size:1.1rem;">Manajemen Kelas</h3>
+                <div style="display:flex;gap:0.5rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="printKelas()"><i class="fas fa-print"></i> Print</button>
+                    <button class="btn btn-primary" onclick="openModal('modalKelasUtama')">
+                        <i class="fas fa-plus"></i> Tambah Kelas Utama
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('modalSubKelas')">
+                        <i class="fas fa-plus"></i> Tambah Sub Kelas
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-4" id="kelasGrid">
+                <!-- Rendered by JS -->
+                <div style="grid-column:1/-1;text-align:center;opacity:0.4;padding:2rem;">Memuat data...</div>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: GURU -->
+        <!-- ======================================== -->
+        <section id="page-guru" class="page-content fade-in" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <input class="form-control" id="searchGuru" placeholder="Cari guru..." style="width:200px;padding:0.45rem 0.8rem;font-size:0.8rem;" />
+                </div>
+                <div style="display:flex;gap:0.5rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="printGuru()"><i class="fas fa-print"></i> Print</button>
+                    <button class="btn btn-primary" onclick="openModal('modalGuru')">
+                        <i class="fas fa-plus"></i> Tambah Guru
+                    </button>
+                </div>
+            </div>
+            <div class="stat-card" style="padding:0;">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama</th>
+                                <th>HP</th>
+                                <th>Email</th>
+                                <th>Bergabung</th>
+                                <th style="text-align:center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guruTableBody">
+                            <tr><td colspan="6" style="text-align:center;padding:2rem;opacity:0.4;">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: ABSENSI -->
+        <!-- ======================================== -->
+        <section id="page-absensi" class="page-content fade-in" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
+                <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+                    <input type="date" class="form-control" id="absensiDate" style="width:160px;padding:0.45rem 0.8rem;font-size:0.8rem;" />
+                    <select class="form-control" id="absensiKelasFilter" style="width:140px;padding:0.45rem 0.8rem;font-size:0.8rem;">
+                        <option value="">Semua Kelas</option>
+                    </select>
+                    <button class="btn btn-secondary btn-sm" onclick="loadAbsensi()"><i class="fas fa-sync"></i> Muat</button>
+                </div>
+                <button class="btn btn-success" onclick="simpanAbsensi()">
+                    <i class="fas fa-save"></i> Simpan Absensi
+                </button>
+            </div>
+            <div class="stat-card" style="padding:0;">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Anak</th>
+                                <th>Kelas</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="absensiTableBody">
+                            <tr><td colspan="3" style="text-align:center;padding:2rem;opacity:0.4;">Pilih tanggal dan kelas untuk memuat absensi</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;" class="no-print">
+                <button class="btn btn-secondary" onclick="rekapAbsensi()"><i class="fas fa-chart-bar"></i> Rekap Bulanan</button>
+                <button class="btn btn-secondary" onclick="cetakAbsensi()"><i class="fas fa-print"></i> Cetak Absensi</button>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: LAPORAN -->
+        <!-- ======================================== -->
+        <section id="page-laporan" class="page-content fade-in" style="display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div class="stat-card">
+                    <h4 style="font-weight:600;margin-bottom:1rem;">Laporan Data Anak</h4>
+                    <div class="form-group">
+                        <label class="form-label">Filter Kelas</label>
+                        <select class="form-control" id="laporanKelasFilter">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Filter Status</label>
+                        <select class="form-control" id="laporanStatusFilter">
+                            <option value="">Semua</option>
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+                        <button class="btn btn-primary btn-sm" onclick="generateLaporanAnak()"><i class="fas fa-eye"></i> Tampilkan</button>
+                        <button class="btn btn-success btn-sm" onclick="exportLaporan('excel')"><i class="fas fa-file-excel"></i> Excel</button>
+                        <button class="btn btn-danger btn-sm" onclick="exportLaporan('pdf')"><i class="fas fa-file-pdf"></i> PDF</button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportLaporan('csv')"><i class="fas fa-file-csv"></i> CSV</button>
+                        <button class="btn btn-secondary btn-sm" onclick="printLaporan()"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h4 style="font-weight:600;margin-bottom:1rem;">Laporan Kehadiran</h4>
+                    <div class="form-group">
+                        <label class="form-label">Periode</label>
+                        <select class="form-control" id="laporanPeriode">
+                            <option value="harian">Harian</option>
+                            <option value="mingguan">Mingguan</option>
+                            <option value="bulanan" selected>Bulanan</option>
+                            <option value="tahunan">Tahunan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bulan</label>
+                        <input type="month" class="form-control" id="laporanBulan" />
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="generateLaporanKehadiran()"><i class="fas fa-eye"></i> Tampilkan</button>
+                </div>
+            </div>
+            <div class="stat-card" style="margin-top:1.5rem;" id="laporanHasilContainer">
+                <div style="text-align:center;padding:2rem;opacity:0.4;">Pilih filter dan klik Tampilkan</div>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: EXPORT -->
+        <!-- ======================================== -->
+        <section id="page-export" class="page-content fade-in" style="display:none;">
+            <div class="stat-card" style="max-width:600px;">
+                <h4 style="font-weight:600;margin-bottom:1rem;">Export Data</h4>
+                <p style="font-size:0.9rem;opacity:0.6;margin-bottom:1.5rem;">Ekspor data ke berbagai format untuk keperluan arsip dan pelaporan.</p>
+                <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <button class="btn btn-success" onclick="exportLaporan('excel')" style="justify-content:center;">
+                        <i class="fas fa-file-excel"></i> Export ke Excel (.xlsx)
+                    </button>
+                    <button class="btn btn-danger" onclick="exportLaporan('pdf')" style="justify-content:center;">
+                        <i class="fas fa-file-pdf"></i> Export ke PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportLaporan('csv')" style="justify-content:center;">
+                        <i class="fas fa-file-csv"></i> Export ke CSV
+                    </button>
+                    <hr style="border-color:rgba(255,255,255,0.06);margin:0.5rem 0;" />
+                    <button class="btn btn-primary" onclick="backupDatabase()" style="justify-content:center;">
+                        <i class="fas fa-database"></i> Backup Database
+                    </button>
+                    <button class="btn btn-outline" onclick="restoreDatabase()" style="justify-content:center;">
+                        <i class="fas fa-undo"></i> Restore Database
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================== -->
+        <!-- PAGE: PENGATURAN -->
+        <!-- ======================================== -->
+        <section id="page-pengaturan" class="page-content fade-in" style="display:none;">
+            <div class="stat-card" style="max-width:600px;">
+                <h4 style="font-weight:600;margin-bottom:1rem;">Pengaturan Aplikasi</h4>
+                <form id="formPengaturan" onsubmit="savePengaturan(event)">
+                    <div class="form-group">
+                        <label class="form-label">Username Admin</label>
+                        <input class="form-control" id="pUsername" placeholder="Username" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password Baru</label>
+                        <input type="password" class="form-control" id="pPassword" placeholder="Kosongkan jika tidak diubah" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Logo (upload gambar)</label>
+                        <input type="file" class="form-control" id="pLogo" accept="image/*" style="padding:0.3rem;" />
+                        <div style="margin-top:0.5rem;display:flex;align-items:center;gap:0.5rem;">
+                            <span style="font-size:0.8rem;opacity:0.5;">Pratinjau:</span>
+                            <img id="logoPreview" src="" alt="Logo" style="max-height:50px;border-radius:8px;display:none;" />
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem;">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan Pengaturan</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================== -->
+    <!-- MODAL: Anak -->
+    <!-- ============================== -->
+    <div class="modal-overlay" id="modalAnak">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalAnakTitle">Tambah Data Anak</h3>
+                <button class="modal-close" onclick="closeModal('modalAnak')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="formAnak" onsubmit="saveAnak(event)">
+                <input type="hidden" id="anakId" value="" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nama Lengkap *</label>
+                        <input class="form-control" id="aNama" placeholder="Nama lengkap" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nama Panggilan</label>
+                        <input class="form-control" id="aPanggilan" placeholder="Nama panggilan" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Jenis Kelamin *</label>
+                        <select class="form-control" id="aJenisKelamin" required>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tanggal Lahir *</label>
+                        <input type="date" class="form-control" id="aTanggalLahir" required />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tempat Lahir</label>
+                        <input class="form-control" id="aTempatLahir" placeholder="Kota lahir" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Golongan Darah</label>
+                        <select class="form-control" id="aGolonganDarah">
+                            <option value="">-</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="AB">AB</option>
+                            <option value="O">O</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nama Ayah</label>
+                        <input class="form-control" id="aAyah" placeholder="Nama ayah" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nama Ibu</label>
+                        <input class="form-control" id="aIbu" placeholder="Nama ibu" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">HP Ayah</label>
+                        <input class="form-control" id="aHpAyah" placeholder="Nomor HP ayah" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">HP Ibu</label>
+                        <input class="form-control" id="aHpIbu" placeholder="Nomor HP ibu" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Alamat</label>
+                    <input class="form-control" id="aAlamat" placeholder="Alamat lengkap" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Kota</label>
+                        <input class="form-control" id="aKota" placeholder="Kota" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Provinsi</label>
+                        <input class="form-control" id="aProvinsi" placeholder="Provinsi" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Kelas *</label>
+                        <select class="form-control" id="aKelas" required>
+                            <option value="">Pilih Kelas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="aStatus">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tanggal Bergabung *</label>
+                    <input type="date" class="form-control" id="aTanggalBergabung" required />
+                </div>
+                <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem;border-top:1px solid transparent;padding-top:1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalAnak')">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btnSimpanAnak"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- MODAL: Kelas Utama -->
+    <!-- ============================== -->
+    <div class="modal-overlay" id="modalKelasUtama">
+        <div class="modal-box" style="max-width:480px;">
+            <div class="modal-header">
+                <h3 id="modalKelasUtamaTitle">Tambah Kelas Utama</h3>
+                <button class="modal-close" onclick="closeModal('modalKelasUtama')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="formKelasUtama" onsubmit="saveKelasUtama(event)">
+                <input type="hidden" id="kelasUtamaId" value="" />
+                <div class="form-group">
+                    <label class="form-label">Nama Kelas Utama *</label>
+                    <input class="form-control" id="kuNama" placeholder="Misal: Shalom, Gloria" required />
+                </div>
+                <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem;border-top:1px solid transparent;padding-top:1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalKelasUtama')">Batal</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- MODAL: Sub Kelas -->
+    <!-- ============================== -->
+    <div class="modal-overlay" id="modalSubKelas">
+        <div class="modal-box" style="max-width:480px;">
+            <div class="modal-header">
+                <h3 id="modalSubKelasTitle">Tambah Sub Kelas</h3>
+                <button class="modal-close" onclick="closeModal('modalSubKelas')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="formSubKelas" onsubmit="saveSubKelas(event)">
+                <input type="hidden" id="subKelasId" value="" />
+                <div class="form-group">
+                    <label class="form-label">Nama Sub Kelas *</label>
+                    <input class="form-control" id="skNama" placeholder="Misal: Batita, Balita" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rentang Usia</label>
+                    <input class="form-control" id="skUsia" placeholder="Misal: 1-3 tahun" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Kelas Induk *</label>
+                    <select class="form-control" id="skParent" required>
+                        <option value="">Pilih Kelas Utama</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem;border-top:1px solid transparent;padding-top:1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalSubKelas')">Batal</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- MODAL: Guru -->
+    <!-- ============================== -->
+    <div class="modal-overlay" id="modalGuru">
+        <div class="modal-box" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 id="modalGuruTitle">Tambah Guru</h3>
+                <button class="modal-close" onclick="closeModal('modalGuru')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="formGuru" onsubmit="saveGuru(event)">
+                <input type="hidden" id="guruId" value="" />
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap *</label>
+                    <input class="form-control" id="gNama" placeholder="Nama guru" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Jenis Kelamin</label>
+                        <select class="form-control" id="gJenisKelamin">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nomor HP</label>
+                        <input class="form-control" id="gHp" placeholder="Nomor HP" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="gEmail" placeholder="email@guru.com" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Alamat</label>
+                    <input class="form-control" id="gAlamat" placeholder="Alamat" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tanggal Bergabung *</label>
+                    <input type="date" class="form-control" id="gTanggalBergabung" required />
+                </div>
+                <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem;border-top:1px solid transparent;padding-top:1rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalGuru')">Batal</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- MODAL: Konfirmasi Hapus -->
+    <!-- ============================== -->
+    <div class="modal-overlay" id="modalConfirm">
+        <div class="modal-box" style="max-width:400px;text-align:center;">
+            <div style="font-size:2.5rem;opacity:0.3;margin-bottom:0.5rem;"><i class="fas fa-exclamation-triangle"></i></div>
+            <h3 style="font-weight:600;margin-bottom:0.25rem;">Konfirmasi Hapus</h3>
+            <p style="opacity:0.6;font-size:0.9rem;margin-bottom:1rem;" id="confirmMessage">Apakah Anda yakin ingin menghapus data ini?</p>
+            <div style="display:flex;gap:0.75rem;justify-content:center;">
+                <button class="btn btn-secondary" onclick="closeModal('modalConfirm')">Batal</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn"><i class="fas fa-trash"></i> Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- JAVASCRIPT - APP -->
+    <!-- ============================== -->
+    <script>
+        // ============================================================
+        // STATE
+        // ============================================================
+        const state = {
+            token: localStorage.getItem('token') || null,
+            user: JSON.parse(localStorage.getItem('user') || 'null'),
+            theme: localStorage.getItem('theme') || 'dark',
+            anakData: [],
+            kelasData: [],
+            guruData: [],
+            absensiData: [],
+            currentPage: 'dashboard',
+            anakPage: 1,
+            anakLimit: 10,
+            editingId: null,
+        };
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
+        function $(id) { return document.getElementById(id); }
+
+        function qs(sel) { return document.querySelector(sel); }
+
+        function qsa(sel) { return document.querySelectorAll(sel); }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            const dt = new Date(d);
+            return dt.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function formatDateInput(d) {
+            if (!d) return '';
+            const dt = new Date(d);
+            return dt.toISOString().split('T')[0];
+        }
+
+        function generateId() {
+            return 'ID' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+        }
+
+        function getUmur(tglLahir) {
+            if (!tglLahir) return 0;
+            const now = new Date();
+            const birth = new Date(tglLahir);
+            let age = now.getFullYear() - birth.getFullYear();
+            const m = now.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+            return age;
+        }
+
+        // ============================================================
+        // TOAST NOTIFICATIONS
+        // ============================================================
+        function showToast(message, type = 'info', duration = 3500) {
+            const container = $('toastContainer');
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <span class="toast-icon"><i class="fas ${icons[type] || icons.info}"></i></span>
+                <span>${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, duration);
+        }
+
+        // ============================================================
+        // THEME
+        // ============================================================
+        function setTheme(theme) {
+            state.theme = theme;
+            document.body.className = theme;
+            localStorage.setItem('theme', theme);
+            const toggle = $('themeToggle');
+            if (theme === 'dark') {
+                toggle.classList.remove('active');
+            } else {
+                toggle.classList.add('active');
+            }
+        }
+
+        $('themeToggle').addEventListener('click', function() {
+            setTheme(state.theme === 'dark' ? 'light' : 'dark');
+        });
+
+        setTheme(state.theme);
+
+        // ============================================================
+        // SIDEBAR / NAVIGATION
+        // ============================================================
+        const sidebar = $('sidebar');
+        const overlay = $('sidebarOverlay');
+
+        $('menuToggle').addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        function navigateTo(page) {
+            state.currentPage = page;
+            qsa('.page-content').forEach(el => el.style.display = 'none');
+            const target = $('page-' + page);
+            if (target) target.style.display = 'block';
+
+            qsa('.nav-item').forEach(el => el.classList.remove('active'));
+            const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+            if (navItem) navItem.classList.add('active');
+
+            const titles = {
+                dashboard: 'Dashboard',
+                anak: 'Data Anak',
+                kelas: 'Kelas',
+                guru: 'Guru',
+                absensi: 'Absensi',
+                laporan: 'Laporan',
+                export: 'Export Data',
+                pengaturan: 'Pengaturan'
+            };
+            $('pageTitle').innerHTML = `${titles[page] || page} <span class="subtitle">| ${page === 'dashboard' ? 'Ikhtisar' : 'Manajemen'}</span>`;
+
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+
+            if (page === 'dashboard') loadDashboard();
+            if (page === 'anak') loadAnak();
+            if (page === 'kelas') loadKelas();
+            if (page === 'guru') loadGuru();
+            if (page === 'absensi') loadAbsensiOptions();
+            if (page === 'pengaturan') loadPengaturan();
+        }
+
+        qsa('.nav-item[data-page]').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateTo(el.dataset.page);
+            });
+        });
+
+        // ============================================================
+        // LOGIN / AUTH
+        // ============================================================
+        function getAdminCreds() {
+            const saved = localStorage.getItem('adminCreds');
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) {}
+            }
+            return { username: 'admin', password: 'admin123' };
+        }
+
+        function login(username, password) {
+            const creds = getAdminCreds();
+            if (username === creds.username && password === creds.password) {
+                const user = {
+                    id: 'USR001',
+                    name: 'Super Admin',
+                    email: 'admin@gereja.com',
+                    role: 'Administrator'
+                };
+                state.token = 'mock-jwt-token-' + Date.now();
+                state.user = user;
+                localStorage.setItem('token', state.token);
+                localStorage.setItem('user', JSON.stringify(user));
+                updateUserUI();
+                showToast('Login berhasil! Selamat datang, ' + user.name, 'success');
+                navigateTo('dashboard');
+                return true;
+            }
+            showToast('Username atau password salah!', 'error');
+            return false;
+        }
+
+        function logout() {
+            state.token = null;
+            state.user = null;
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            updateUserUI();
+            showToast('Anda telah logout.', 'info');
+            showLoginScreen();
+        }
+
+        function updateUserUI() {
+            if (state.user) {
+                $('userName').textContent = state.user.name;
+                $('userRole').textContent = state.user.role;
+                const initials = state.user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                $('userAvatar').textContent = initials;
+            } else {
+                $('userName').textContent = 'Tamu';
+                $('userRole').textContent = 'Belum Login';
+                $('userAvatar').textContent = '?';
+            }
+        }
+
+        function showLoginScreen() {
+            const overlay = document.createElement('div');
+            overlay.id = 'loginOverlay';
+            overlay.style.cssText = `
+                position:fixed;inset:0;z-index:9999;
+                display:flex;align-items:center;justify-content:center;
+                background:rgba(15,17,23,0.92);backdrop-filter:blur(8px);
+                padding:1rem;
+            `;
+            // ambil logo yang tersimpan
+            const logoData = localStorage.getItem('appLogo');
+            const logoHtml = logoData ? `<img src="${logoData}" style="width:60px;height:60px;object-fit:contain;border-radius:12px;"/>` :
+                `<div style="width:60px;height:60px;background:linear-gradient(135deg,#4f46e5,#818cf8);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;margin:0 auto 1rem;">
+                    <i class="fas fa-church"></i>
+                </div>`;
+            overlay.innerHTML = `
+                <div style="max-width:400px;width:100%;background:#1a1d27;border-radius:24px;padding:2rem;border:1px solid #2d313e;text-align:center;">
+                    ${logoHtml}
+                    <h2 style="color:#f1f5f9;font-weight:700;margin-bottom:0.25rem;">Sunday School AO</h2>
+                    <p style="color:#94a3b8;font-size:0.9rem;margin-bottom:1.5rem;">GPdI Alfa Omega Agats</p>
+                    <form id="loginForm" style="text-align:left;">
+                        <div class="form-group">
+                            <label class="form-label" style="color:#c8d0e0;">Username</label>
+                            <input class="form-control" id="loginUsername" placeholder="Username" value="admin" style="background:#13161f;border-color:#2d313e;color:#e5e7eb;" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="color:#c8d0e0;">Password</label>
+                            <div style="position:relative;">
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Password" value="admin123" style="background:#13161f;border-color:#2d313e;color:#e5e7eb;padding-right:2.5rem;" />
+                                <button type="button" id="loginShowPass" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#94a3b8;cursor:pointer;font-size:0.9rem;">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.7rem;">
+                            <i class="fas fa-sign-in-alt"></i> Masuk
+                        </button>
+                        <p style="font-size:0.7rem;color:#64748b;margin-top:0.75rem;text-align:center;">
+                            © Copyright 2026 | Eunoia Digital. All Rights Reserved
+                        </p>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            overlay.querySelector('#loginShowPass').addEventListener('click', function() {
+                const inp = overlay.querySelector('#loginPassword');
+                if (inp.type === 'password') { inp.type = 'text';
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i>'; } else { inp.type = 'password';
+                    this.innerHTML = '<i class="fas fa-eye"></i>'; }
+            });
+
+            overlay.querySelector('#loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = overlay.querySelector('#loginUsername').value.trim();
+                const password = overlay.querySelector('#loginPassword').value.trim();
+                if (login(username, password)) {
+                    overlay.remove();
+                }
+            });
+        }
+
+        if (!state.token || !state.user) {
+            showLoginScreen();
+        } else {
+            updateUserUI();
+            navigateTo('dashboard');
+        }
+
+        $('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+
+        // ============================================================
+        // PENGATURAN
+        // ============================================================
+        function loadPengaturan() {
+            const creds = getAdminCreds();
+            $('pUsername').value = creds.username || '';
+            $('pPassword').value = '';
+            const logo = localStorage.getItem('appLogo');
+            const preview = $('logoPreview');
+            if (logo) {
+                preview.src = logo;
+                preview.style.display = 'block';
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function savePengaturan(e) {
+            e.preventDefault();
+            const username = $('pUsername').value.trim();
+            const password = $('pPassword').value.trim();
+            if (!username) { showToast('Username tidak boleh kosong', 'warning'); return; }
+
+            const creds = getAdminCreds();
+            creds.username = username;
+            if (password) creds.password = password;
+            localStorage.setItem('adminCreds', JSON.stringify(creds));
+
+            // Upload logo
+            const fileInput = $('pLogo');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const dataUrl = ev.target.result;
+                    localStorage.setItem('appLogo', dataUrl);
+                    updateLogoUI(dataUrl);
+                    showToast('Pengaturan berhasil disimpan, logo diperbarui!', 'success');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                showToast('Pengaturan berhasil disimpan!', 'success');
+            }
+            // Refresh logo di sidebar
+            const storedLogo = localStorage.getItem('appLogo');
+            if (storedLogo) updateLogoUI(storedLogo);
+        }
+
+        function updateLogoUI(dataUrl) {
+            const icon = $('brandIcon');
+            icon.innerHTML = `<img src="${dataUrl}" alt="Logo" />`;
+            // juga update preview di pengaturan
+            const preview = $('logoPreview');
+            if (preview) {
+                preview.src = dataUrl;
+                preview.style.display = 'block';
+            }
+        }
+
+        // Load logo saat startup
+        (function initLogo() {
+            const logo = localStorage.getItem('appLogo');
+            if (logo) updateLogoUI(logo);
+        })();
+
+        // ============================================================
+        // DASHBOARD
+        // ============================================================
+        function loadDashboard() {
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+            const guru = JSON.parse(localStorage.getItem('guruData') || '[]');
+            const kelas = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            const absensi = JSON.parse(localStorage.getItem('absensiData') || '[]');
+
+            const totalAnak = anak.length;
+            const aktif = anak.filter(a => a.status === 'Aktif').length;
+            const totalGuru = guru.length;
+            // hitung total sub-kelas (yang memiliki parent)
+            const totalKelas = kelas.filter(k => k.parent).length;
+
+            const now = new Date();
+            const bulanIni = now.getMonth();
+            const tahunIni = now.getFullYear();
+            const hadirBulan = absensi.filter(a => {
+                const d = new Date(a.tanggal);
+                return d.getMonth() === bulanIni && d.getFullYear() === tahunIni && a.status === 'Hadir';
+            }).length;
+
+            $('statTotalAnak').textContent = totalAnak;
+            $('statTotalGuru').textContent = totalGuru;
+            $('statTotalKelas').textContent = totalKelas;
+            $('statKehadiranBulan').textContent = hadirBulan || 0;
+            $('totalAnakBadge').textContent = totalAnak;
+
+            renderChart(kelas, anak);
+            renderActivity(anak, absensi);
+            renderRecentChildren(anak);
+            renderBirthdays(anak);
+        }
+
+        function renderChart(kelas, anak) {
+            const container = $('chartGrowth');
+            const subKelas = kelas.filter(k => k.parent);
+            if (!subKelas.length) {
+                container.innerHTML = '<div style="text-align:center;opacity:0.3;width:100%;padding:1rem;">Belum ada sub kelas</div>';
+                return;
+            }
+            const colors = ['#818cf8', '#22c55e', '#fb923c', '#3b82f6', '#ec4899', '#8b5cf6', '#14b8a6', '#f43f5e'];
+            let html = '';
+            const maxVal = Math.max(1, ...subKelas.map(k => anak.filter(a => a.kelas === k.nama).length));
+            subKelas.forEach((k, i) => {
+                const count = anak.filter(a => a.kelas === k.nama).length;
+                const pct = Math.max(8, (count / maxVal) * 100);
+                html += `
+                    <div style="display:flex;flex-direction:column;align-items:center;flex:1;max-width:60px;">
+                        <div class="chart-bar" style="height:${pct}px;background:${colors[i % colors.length]};width:32px;">
+                            <span class="bar-value">${count}</span>
+                        </div>
+                        <span class="bar-label">${k.nama.slice(0,8)}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderActivity(anak, absensi) {
+            const container = $('activityList');
+            const activities = [];
+
+            anak.slice(-5).reverse().forEach(a => {
+                activities.push({
+                    text: `<i class="fas fa-child" style="color:#818cf8;width:16px;"></i> Anak baru: <strong>${a.nama}</strong>`,
+                    time: 'Baru saja'
+                });
+            });
+
+            absensi.slice(-5).reverse().forEach(a => {
+                const statusIcon = a.status === 'Hadir' ? 'fa-check-circle' : 'fa-clock';
+                const color = a.status === 'Hadir' ? '#22c55e' : '#fb923c';
+                activities.push({
+                    text: `<i class="fas ${statusIcon}" style="color:${color};width:16px;"></i> ${a.anakNama} <span style="opacity:0.5;">${a.status}</span>`,
+                    time: formatDate(a.tanggal)
+                });
+            });
+
+            if (!activities.length) {
+                container.innerHTML =
+                    '<div style="opacity:0.4;font-size:0.85rem;text-align:center;padding:1rem 0;">Belum ada aktivitas</div>';
+                return;
+            }
+
+            container.innerHTML = activities.slice(0, 8).map(a => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.85rem;">
+                    <span>${a.text}</span>
+                    <span style="font-size:0.65rem;opacity:0.3;">${a.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderRecentChildren(anak) {
+            const tbody = $('recentChildrenTable');
+            const recent = anak.slice(-5).reverse();
+            if (!recent.length) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;opacity:0.4;padding:1.5rem;">Belum ada data</td></tr>';
+                return;
+            }
+            tbody.innerHTML = recent.map(a => `
+                <tr>
+                    <td><strong>${a.nama}</strong></td>
+                    <td>${a.kelas || '-'}</td>
+                    <td>${a.ayah || a.ibu || '-'}</td>
+                    <td><span class="status-badge ${a.status === 'Aktif' ? 'active' : 'inactive'}">${a.status || 'Aktif'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function renderBirthdays(anak) {
+            const now = new Date();
+            const bulanIni = now.getMonth();
+            const thisMonth = anak.filter(a => {
+                if (!a.tanggalLahir) return false;
+                const birth = new Date(a.tanggalLahir);
+                return birth.getMonth() === bulanIni;
+            });
+
+            const container = $('birthdayList');
+            $('bdayMonth').textContent = now.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+            if (!thisMonth.length) {
+                container.innerHTML =
+                    '<div style="opacity:0.4;font-size:0.85rem;text-align:center;padding:0.5rem 0;">Tidak ada anak yang berulang tahun bulan ini</div>';
+                return;
+            }
+
+            container.innerHTML = thisMonth.map(a => {
+                const umur = getUmur(a.tanggalLahir);
+                return `
+                    <div class="birthday-item">
+                        <span class="bday-icon"><i class="fas fa-birthday-cake"></i></span>
+                        <span class="bday-name">${a.nama}</span>
+                        <span style="font-size:0.75rem;opacity:0.5;">${formatDate(a.tanggalLahir)}</span>
+                        <span class="bday-age">🎂 ${umur} tahun</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // DATA ANAK - CRUD
+        // ============================================================
+        function loadAnak() {
+            const data = JSON.parse(localStorage.getItem('anakData') || '[]');
+            state.anakData = data;
+            renderAnakTable(data);
+            populateKelasFilter();
+        }
+
+        function renderAnakTable(data) {
+            const tbody = $('anakTableBody');
+            if (!data.length) {
+                tbody.innerHTML =
+                    '<tr><td colspan="7" style="text-align:center;padding:2rem;opacity:0.4;">Belum ada data anak. Tambahkan sekarang!</td></tr>';
+                $('anakPaginationInfo').textContent = 'Menampilkan 0 data';
+                $('anakPaginationButtons').innerHTML = '';
+                return;
+            }
+
+            const search = ($('searchAnak')?.value || '').toLowerCase();
+            const kelas = $('filterKelasAnak')?.value || '';
+            const status = $('filterStatusAnak')?.value || '';
+
+            let filtered = data.filter(a => {
+                const matchSearch = a.nama.toLowerCase().includes(search) ||
+                    (a.ayah || '').toLowerCase().includes(search) ||
+                    (a.ibu || '').toLowerCase().includes(search) ||
+                    (a.hpAyah || '').includes(search) ||
+                    (a.hpIbu || '').includes(search);
+                const matchKelas = !kelas || a.kelas === kelas;
+                const matchStatus = !status || a.status === status;
+                return matchSearch && matchKelas && matchStatus;
+            });
+
+            const page = state.anakPage || 1;
+            const limit = state.anakLimit || 10;
+            const total = filtered.length;
+            const totalPages = Math.ceil(total / limit) || 1;
+            const start = (page - 1) * limit;
+            const end = start + limit;
+            const pageData = filtered.slice(start, end);
+
+            $('anakPaginationInfo').textContent = `Menampilkan ${start+1}-${Math.min(end,total)} dari ${total} data`;
+
+            let pagHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                pagHtml += `<button class="btn btn-sm ${i===page?'btn-primary':'btn-secondary'}" onclick="state.anakPage=${i};loadAnak();" style="padding:0.2rem 0.7rem;">${i}</button>`;
+            }
+            $('anakPaginationButtons').innerHTML = pagHtml;
+
+            if (!pageData.length) {
+                tbody.innerHTML =
+                    '<tr><td colspan="7" style="text-align:center;padding:2rem;opacity:0.4;">Tidak ada data yang cocok</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = pageData.map(a => `
+                <tr>
+                    <td><span style="font-family:monospace;font-size:0.75rem;opacity:0.6;">${a.nik || '-'}</span></td>
+                    <td><strong>${a.nama}</strong> ${a.panggilan ? `(${a.panggilan})` : ''}</td>
+                    <td>${a.kelas || '-'}</td>
+                    <td>${a.ayah || a.ibu || '-'}</td>
+                    <td>${a.hpAyah || a.hpIbu || '-'}</td>
+                    <td><span class="status-badge ${a.status === 'Aktif' ? 'active' : 'inactive'}">${a.status || 'Aktif'}</span></td>
+                    <td style="text-align:center;">
+                        <button class="btn btn-secondary btn-xs" onclick="editAnak('${a.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger btn-xs" onclick="confirmDelete('anak','${a.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function populateKelasFilter() {
+            const kelas = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            // hanya sub-kelas (yang memiliki parent) yang ditampilkan sebagai pilihan kelas untuk anak
+            const subKelas = kelas.filter(k => k.parent);
+            const selects = ['filterKelasAnak', 'absensiKelasFilter', 'laporanKelasFilter', 'aKelas'];
+            selects.forEach(id => {
+                const el = $(id);
+                if (!el) return;
+                const currentVal = el.value;
+                el.innerHTML = '<option value="">Semua Kelas</option>';
+                subKelas.forEach(k => {
+                    el.innerHTML += `<option value="${k.nama}">${k.nama}</option>`;
+                });
+                if (currentVal) el.value = currentVal;
+            });
+
+            // Untuk modal sub kelas, isi pilihan kelas induk
+            const parentSelect = $('skParent');
+            if (parentSelect) {
+                const utama = kelas.filter(k => !k.parent);
+                const curVal = parentSelect.value;
+                parentSelect.innerHTML = '<option value="">Pilih Kelas Utama</option>';
+                utama.forEach(k => {
+                    parentSelect.innerHTML += `<option value="${k.id}">${k.nama}</option>`;
+                });
+                if (curVal) parentSelect.value = curVal;
+            }
+        }
+
+        function saveAnak(e) {
+            e.preventDefault();
+            const id = $('anakId').value;
+            const data = {
+                id: id || generateId(),
+                nik: id ? '' : 'AK-' + Date.now().toString().slice(-6),
+                nama: $('aNama').value.trim(),
+                panggilan: $('aPanggilan').value.trim(),
+                jenisKelamin: $('aJenisKelamin').value,
+                tanggalLahir: $('aTanggalLahir').value,
+                tempatLahir: $('aTempatLahir').value.trim(),
+                golonganDarah: $('aGolonganDarah').value,
+                ayah: $('aAyah').value.trim(),
+                ibu: $('aIbu').value.trim(),
+                hpAyah: $('aHpAyah').value.trim(),
+                hpIbu: $('aHpIbu').value.trim(),
+                alamat: $('aAlamat').value.trim(),
+                kota: $('aKota').value.trim(),
+                provinsi: $('aProvinsi').value.trim(),
+                kelas: $('aKelas').value,
+                status: $('aStatus').value,
+                tanggalBergabung: $('aTanggalBergabung').value,
+                createdAt: id ? undefined : new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            };
+
+            if (!data.nama || !data.tanggalLahir || !data.kelas || !data.tanggalBergabung) {
+                showToast('Lengkapi field yang wajib (*)', 'warning');
+                return;
+            }
+
+            let anakData = JSON.parse(localStorage.getItem('anakData') || '[]');
+            if (id) {
+                const idx = anakData.findIndex(a => a.id === id);
+                if (idx > -1) {
+                    data.createdAt = anakData[idx].createdAt;
+                    anakData[idx] = { ...anakData[idx], ...data };
+                }
+                showToast('Data anak berhasil diperbarui!', 'success');
+            } else {
+                anakData.push(data);
+                showToast('Data anak berhasil ditambahkan!', 'success');
+            }
+            localStorage.setItem('anakData', JSON.stringify(anakData));
+            closeModal('modalAnak');
+            loadAnak();
+            loadDashboard();
+            $('formAnak').reset();
+            $('anakId').value = '';
+        }
+
+        function editAnak(id) {
+            const anakData = JSON.parse(localStorage.getItem('anakData') || '[]');
+            const a = anakData.find(d => d.id === id);
+            if (!a) { showToast('Data tidak ditemukan', 'error'); return; }
+            $('anakId').value = a.id;
+            $('aNama').value = a.nama || '';
+            $('aPanggilan').value = a.panggilan || '';
+            $('aJenisKelamin').value = a.jenisKelamin || 'Laki-laki';
+            $('aTanggalLahir').value = formatDateInput(a.tanggalLahir);
+            $('aTempatLahir').value = a.tempatLahir || '';
+            $('aGolonganDarah').value = a.golonganDarah || '';
+            $('aAyah').value = a.ayah || '';
+            $('aIbu').value = a.ibu || '';
+            $('aHpAyah').value = a.hpAyah || '';
+            $('aHpIbu').value = a.hpIbu || '';
+            $('aAlamat').value = a.alamat || '';
+            $('aKota').value = a.kota || '';
+            $('aProvinsi').value = a.provinsi || '';
+            $('aKelas').value = a.kelas || '';
+            $('aStatus').value = a.status || 'Aktif';
+            $('aTanggalBergabung').value = formatDateInput(a.tanggalBergabung);
+            $('modalAnakTitle').textContent = 'Edit Data Anak';
+            $('btnSimpanAnak').innerHTML = '<i class="fas fa-save"></i> Update';
+            openModal('modalAnak');
+        }
+
+        function deleteAnak(id) {
+            let anakData = JSON.parse(localStorage.getItem('anakData') || '[]');
+            anakData = anakData.filter(a => a.id !== id);
+            localStorage.setItem('anakData', JSON.stringify(anakData));
+            showToast('Data anak berhasil dihapus!', 'success');
+            loadAnak();
+            loadDashboard();
+        }
+
+        $('searchAnak')?.addEventListener('input', () => { state.anakPage = 1;
+            loadAnak(); });
+        $('filterKelasAnak')?.addEventListener('change', () => { state.anakPage = 1;
+            loadAnak(); });
+        $('filterStatusAnak')?.addEventListener('change', () => { state.anakPage = 1;
+            loadAnak(); });
+
+        // ============================================================
+        // PRINT ANAK
+        // ============================================================
+        function printAnak() {
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+            if (!anak.length) { showToast('Tidak ada data anak untuk dicetak', 'warning'); return; }
+
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            printWindow.document.write(`
+                <html><head><title>Data Anak Sekolah Minggu</title>
+                <style>
+                    body { font-family: 'Times New Roman', serif; padding: 2rem; }
+                    h1 { text-align: center; color: #1a2a4a; border-bottom: 3px double #4f46e5; padding-bottom: 0.5rem; }
+                    .sub { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 1.5rem; }
+                    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+                    th, td { border: 1px solid #333; padding: 0.4rem 0.6rem; text-align: left; }
+                    th { background: #4f46e5; color: #fff; }
+                    .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
+                </style>
+                </head><body>
+                <h1>📋 DATA ANAK SEKOLAH MINGGU</h1>
+                <div class="sub">Total: ${anak.length} anak • Dicetak: ${new Date().toLocaleString()}</div>
+                <table>
+                    <thead><tr><th>NIK</th><th>Nama</th><th>Kelas</th><th>Usia</th><th>Orang Tua</th><th>Status</th></tr></thead>
+                    <tbody>
+                        ${anak.map(a => `
+                            <tr>
+                                <td>${a.nik || '-'}</td>
+                                <td>${a.nama}</td>
+                                <td>${a.kelas || '-'}</td>
+                                <td>${getUmur(a.tanggalLahir)} th</td>
+                                <td>${a.ayah || a.ibu || '-'}</td>
+                                <td>${a.status || 'Aktif'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="footer">Sistem Database Sekolah Minggu • Halaman 1</div>
+                <script>window.onload = function() { window.print(); }<\/script>
+                </body></html>
+            `);
+            printWindow.document.close();
+            showToast('Print data anak siap', 'success');
+        }
+
+        // ============================================================
+        // KELAS - CRUD (Utama & Sub)
+        // ============================================================
+        function loadKelas() {
+            const data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            state.kelasData = data;
+            const grid = $('kelasGrid');
+
+            const utama = data.filter(k => !k.parent);
+            if (!utama.length) {
+                grid.innerHTML =
+                    '<div style="grid-column:1/-1;text-align:center;opacity:0.4;padding:2rem;">Belum ada kelas utama. Tambahkan sekarang!</div>';
+                return;
+            }
+
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+            let html = '';
+            utama.forEach(k => {
+                const sub = data.filter(s => s.parent === k.id);
+                const totalAnak = anak.filter(a => a.kelas && sub.some(s => s.nama === a.kelas)).length;
+                html += `
+                    <div class="stat-card" style="padding:1.25rem;">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                            <div>
+                                <h4 style="font-weight:600;font-size:1rem;">${k.nama}</h4>
+                                <p style="font-size:0.8rem;opacity:0.5;">${sub.length} sub-kelas</p>
+                            </div>
+                            <div style="display:flex;gap:0.25rem;">
+                                <button class="btn btn-secondary btn-xs" onclick="openModal('modalSubKelas'); document.getElementById('skParent').value='${k.id}'">
+                                    <i class="fas fa-plus"></i> Sub
+                                </button>
+                                <button class="btn btn-secondary btn-xs" onclick="editKelasUtama('${k.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-xs" onclick="confirmDelete('kelasUtama','${k.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div style="margin-top:0.5rem;font-size:0.8rem;">
+                            <span><i class="fas fa-child" style="opacity:0.3;"></i> ${totalAnak} anak</span>
+                        </div>
+                        ${sub.length ? `
+                            <div class="sub-kelas-list">
+                                ${sub.map(s => `
+                                    <div class="sub-kelas-item">
+                                        <span>${s.nama}</span>
+                                        <span class="usia">${s.rentangUsia || ''}</span>
+                                        <div>
+                                            <button class="btn btn-secondary btn-xs" onclick="editSubKelas('${s.id}')"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-danger btn-xs" onclick="confirmDelete('subKelas','${s.id}')"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<div style="opacity:0.3;font-size:0.8rem;margin-top:0.5rem;">Belum ada sub-kelas</div>'}
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+            populateKelasFilter();
+        }
+
+        // Kelas Utama
+        function saveKelasUtama(e) {
+            e.preventDefault();
+            const id = $('kelasUtamaId').value;
+            const nama = $('kuNama').value.trim();
+            if (!nama) { showToast('Nama kelas utama wajib diisi', 'warning'); return; }
+            let data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            if (id) {
+                const idx = data.findIndex(k => k.id === id);
+                if (idx > -1) data[idx].nama = nama;
+                showToast('Kelas utama diperbarui', 'success');
+            } else {
+                data.push({ id: generateId(), nama, parent: null, rentangUsia: '', jenis: 'utama' });
+                showToast('Kelas utama ditambahkan', 'success');
+            }
+            localStorage.setItem('kelasData', JSON.stringify(data));
+            closeModal('modalKelasUtama');
+            loadKelas();
+            loadDashboard();
+            $('formKelasUtama').reset();
+            $('kelasUtamaId').value = '';
+        }
+
+        function editKelasUtama(id) {
+            const data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            const k = data.find(d => d.id === id);
+            if (!k) { showToast('Data tidak ditemukan', 'error'); return; }
+            $('kelasUtamaId').value = k.id;
+            $('kuNama').value = k.nama || '';
+            $('modalKelasUtamaTitle').textContent = 'Edit Kelas Utama';
+            openModal('modalKelasUtama');
+        }
+
+        function deleteKelasUtama(id) {
+            let data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            // Hapus juga semua sub-kelas yang terkait
+            data = data.filter(k => k.id !== id && k.parent !== id);
+            localStorage.setItem('kelasData', JSON.stringify(data));
+            showToast('Kelas utama dan sub-kelasnya dihapus', 'success');
+            loadKelas();
+            loadDashboard();
+            populateKelasFilter();
+        }
+
+        // Sub Kelas
+        function saveSubKelas(e) {
+            e.preventDefault();
+            const id = $('subKelasId').value;
+            const nama = $('skNama').value.trim();
+            const rentangUsia = $('skUsia').value.trim();
+            const parent = $('skParent').value;
+            if (!nama || !parent) { showToast('Nama dan kelas induk wajib diisi', 'warning'); return; }
+            let data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            if (id) {
+                const idx = data.findIndex(k => k.id === id);
+                if (idx > -1) { data[idx].nama = nama;
+                    data[idx].rentangUsia = rentangUsia;
+                    data[idx].parent = parent; }
+                showToast('Sub kelas diperbarui', 'success');
+            } else {
+                data.push({ id: generateId(), nama, parent, rentangUsia, jenis: 'sub' });
+                showToast('Sub kelas ditambahkan', 'success');
+            }
+            localStorage.setItem('kelasData', JSON.stringify(data));
+            closeModal('modalSubKelas');
+            loadKelas();
+            loadDashboard();
+            populateKelasFilter();
+            $('formSubKelas').reset();
+            $('subKelasId').value = '';
+        }
+
+        function editSubKelas(id) {
+            const data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            const k = data.find(d => d.id === id);
+            if (!k) { showToast('Data tidak ditemukan', 'error'); return; }
+            $('subKelasId').value = k.id;
+            $('skNama').value = k.nama || '';
+            $('skUsia').value = k.rentangUsia || '';
+            $('skParent').value = k.parent || '';
+            $('modalSubKelasTitle').textContent = 'Edit Sub Kelas';
+            openModal('modalSubKelas');
+        }
+
+        function deleteSubKelas(id) {
+            let data = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            data = data.filter(k => k.id !== id);
+            localStorage.setItem('kelasData', JSON.stringify(data));
+            showToast('Sub kelas dihapus', 'success');
+            loadKelas();
+            loadDashboard();
+            populateKelasFilter();
+        }
+
+        // ============================================================
+        // PRINT KELAS
+        // ============================================================
+        function printKelas() {
+            const kelas = JSON.parse(localStorage.getItem('kelasData') || '[]');
+            if (!kelas.length) { showToast('Tidak ada data kelas untuk dicetak', 'warning'); return; }
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+            const utama = kelas.filter(k => !k.parent);
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            printWindow.document.write(`
+                <html><head><title>Data Kelas Sekolah Minggu</title>
+                <style>
+                    body { font-family: 'Times New Roman', serif; padding: 2rem; }
+                    h1 { text-align: center; color: #1a2a4a; border-bottom: 3px double #4f46e5; padding-bottom: 0.5rem; }
+                    .sub { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 1.5rem; }
+                    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+                    th, td { border: 1px solid #333; padding: 0.4rem 0.6rem; text-align: left; }
+                    th { background: #4f46e5; color: #fff; }
+                    .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
+                </style>
+                </head><body>
+                <h1>📋 DATA KELAS SEKOLAH MINGGU</h1>
+                <div class="sub">Total: ${utama.length} kelas utama • Dicetak: ${new Date().toLocaleString()}</div>
+                <table>
+                    <thead><tr><th>Kelas Utama</th><th>Sub Kelas</th><th>Rentang Usia</th><th>Jumlah Anak</th></tr></thead>
+                    <tbody>
+                        ${utama.map(k => {
+                            const subs = kelas.filter(s => s.parent === k.id);
+                            return subs.length ? subs.map(s => `
+                                <tr>
+                                    <td>${k.nama}</td>
+                                    <td>${s.nama}</td>
+                                    <td>${s.rentangUsia || '-'}</td>
+                                    <td>${anak.filter(a => a.kelas === s.nama).length}</td>
+                                </tr>
+                            `).join('') : `
+                                <tr><td>${k.nama}</td><td colspan="3" style="opacity:0.4;">Belum ada sub-kelas</td></tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+                <div class="footer">Sistem Database Sekolah Minggu • Halaman 1</div>
+                <script>window.onload = function() { window.print(); }<\/script>
+                </body></html>
+            `);
+            printWindow.document.close();
+            showToast('Print data kelas siap', 'success');
+        }
+
+        // ============================================================
+        // GURU - CRUD
+        // ============================================================
+        function loadGuru() {
+            const data = JSON.parse(localStorage.getItem('guruData') || '[]');
+            state.guruData = data;
+            const tbody = $('guruTableBody');
+            if (!data.length) {
+                tbody.innerHTML =
+                    '<tr><td colspan="6" style="text-align:center;padding:2rem;opacity:0.4;">Belum ada guru. Tambahkan sekarang!</td></tr>';
+                return;
+            }
+            const search = ($('searchGuru')?.value || '').toLowerCase();
+            const filtered = data.filter(g => g.nama.toLowerCase().includes(search));
+            tbody.innerHTML = filtered.map(g => `
+                <tr>
+                    <td><span style="font-family:monospace;font-size:0.75rem;opacity:0.6;">${g.id}</span></td>
+                    <td><strong>${g.nama}</strong></td>
+                    <td>${g.hp || '-'}</td>
+                    <td>${g.email || '-'}</td>
+                    <td>${formatDate(g.tanggalBergabung || g.createdAt)}</td>
+                    <td style="text-align:center;">
+                        <button class="btn btn-secondary btn-xs" onclick="editGuru('${g.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger btn-xs" onclick="confirmDelete('guru','${g.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        $('searchGuru')?.addEventListener('input', loadGuru);
+
+        function saveGuru(e) {
+            e.preventDefault();
+            const id = $('guruId').value;
+            const data = {
+                id: id || generateId(),
+                nama: $('gNama').value.trim(),
+                jenisKelamin: $('gJenisKelamin').value,
+                hp: $('gHp').value.trim(),
+                email: $('gEmail').value.trim(),
+                alamat: $('gAlamat').value.trim(),
+                tanggalBergabung: $('gTanggalBergabung').value,
+                createdAt: id ? undefined : new Date().toISOString(),
+            };
+            if (!data.nama || !data.tanggalBergabung) { showToast('Nama dan tanggal bergabung wajib diisi', 'warning'); return; }
+            let guruData = JSON.parse(localStorage.getItem('guruData') || '[]');
+            if (id) {
+                const idx = guruData.findIndex(g => g.id === id);
+                if (idx > -1) { guruData[idx] = { ...guruData[idx], ...data }; }
+                showToast('Guru berhasil diperbarui!', 'success');
+            } else {
+                guruData.push(data);
+                showToast('Guru berhasil ditambahkan!', 'success');
+            }
+            localStorage.setItem('guruData', JSON.stringify(guruData));
+            closeModal('modalGuru');
+            loadGuru();
+            loadDashboard();
+            $('formGuru').reset();
+            $('guruId').value = '';
+        }
+
+        function editGuru(id) {
+            const data = JSON.parse(localStorage.getItem('guruData') || '[]');
+            const g = data.find(d => d.id === id);
+            if (!g) { showToast('Data tidak ditemukan', 'error'); return; }
+            $('guruId').value = g.id;
+            $('gNama').value = g.nama || '';
+            $('gJenisKelamin').value = g.jenisKelamin || 'Laki-laki';
+            $('gHp').value = g.hp || '';
+            $('gEmail').value = g.email || '';
+            $('gAlamat').value = g.alamat || '';
+            $('gTanggalBergabung').value = formatDateInput(g.tanggalBergabung);
+            $('modalGuruTitle').textContent = 'Edit Guru';
+            openModal('modalGuru');
+        }
+
+        function deleteGuru(id) {
+            let data = JSON.parse(localStorage.getItem('guruData') || '[]');
+            data = data.filter(g => g.id !== id);
+            localStorage.setItem('guruData', JSON.stringify(data));
+            showToast('Guru berhasil dihapus!', 'success');
+            loadGuru();
+            loadDashboard();
+        }
+
+        // ============================================================
+        // PRINT GURU
+        // ============================================================
+        function printGuru() {
+            const guru = JSON.parse(localStorage.getItem('guruData') || '[]');
+            if (!guru.length) { showToast('Tidak ada data guru untuk dicetak', 'warning'); return; }
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            printWindow.document.write(`
+                <html><head><title>Data Guru Sekolah Minggu</title>
+                <style>
+                    body { font-family: 'Times New Roman', serif; padding: 2rem; }
+                    h1 { text-align: center; color: #1a2a4a; border-bottom: 3px double #4f46e5; padding-bottom: 0.5rem; }
+                    .sub { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 1.5rem; }
+                    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+                    th, td { border: 1px solid #333; padding: 0.4rem 0.6rem; text-align: left; }
+                    th { background: #4f46e5; color: #fff; }
+                    .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
+                </style>
+                </head><body>
+                <h1>📋 DATA GURU SEKOLAH MINGGU</h1>
+                <div class="sub">Total: ${guru.length} guru • Dicetak: ${new Date().toLocaleString()}</div>
+                <table>
+                    <thead><tr><th>ID</th><th>Nama</th><th>HP</th><th>Email</th><th>Bergabung</th></tr></thead>
+                    <tbody>
+                        ${guru.map(g => `
+                            <tr>
+                                <td>${g.id}</td>
+                                <td>${g.nama}</td>
+                                <td>${g.hp || '-'}</td>
+                                <td>${g.email || '-'}</td>
+                                <td>${formatDate(g.tanggalBergabung || g.createdAt)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="footer">Sistem Database Sekolah Minggu • Halaman 1</div>
+                <script>window.onload = function() { window.print(); }<\/script>
+                </body></html>
+            `);
+            printWindow.document.close();
+            showToast('Print data guru siap', 'success');
+        }
+
+        // ============================================================
+        // ABSENSI
+        // ============================================================
+        function loadAbsensiOptions() {
+            populateKelasFilter();
+            if (!$('absensiDate').value) {
+                $('absensiDate').value = new Date().toISOString().split('T')[0];
+            }
+            loadAbsensi();
+        }
+
+        function loadAbsensi() {
+            const tanggal = $('absensiDate').value;
+            const kelas = $('absensiKelasFilter').value;
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+            const absensi = JSON.parse(localStorage.getItem('absensiData') || '[]');
+
+            let filtered = anak;
+            if (kelas) filtered = filtered.filter(a => a.kelas === kelas);
+            if (filtered.length === 0) {
+                $('absensiTableBody').innerHTML =
+                    '<tr><td colspan="3" style="text-align:center;padding:2rem;opacity:0.4;">Tidak ada anak di kelas ini</td></tr>';
+                return;
+            }
+
+            const existing = absensi.filter(a => a.tanggal === tanggal);
+
+            let html = '';
+            filtered.forEach(a => {
+                const found = existing.find(e => e.anakId === a.id);
+                const status = found ? found.status : 'Hadir';
+                html += `
+                    <tr>
+                        <td><strong>${a.nama}</strong></td>
+                        <td>${a.kelas || '-'}</td>
+                        <td>
+                            <select class="form-control" data-anakid="${a.id}" style="padding:0.3rem 0.6rem;font-size:0.8rem;width:120px;">
+                                <option value="Hadir" ${status==='Hadir'?'selected':''}>Hadir</option>
+                                <option value="Izin" ${status==='Izin'?'selected':''}>Izin</option>
+                                <option value="Sakit" ${status==='Sakit'?'selected':''}>Sakit</option>
+                                <option value="Alpha" ${status==='Alpha'?'selected':''}>Alpha</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+            $('absensiTableBody').innerHTML = html;
+            state.absensiData = filtered.map(a => ({ anakId: a.id, anakNama: a.nama }));
+        }
+
+        function simpanAbsensi() {
+            const tanggal = $('absensiDate').value;
+            if (!tanggal) { showToast('Pilih tanggal terlebih dahulu', 'warning'); return; }
+
+            const selects = document.querySelectorAll('#absensiTableBody select');
+            const absensiData = JSON.parse(localStorage.getItem('absensiData') || '[]');
+            const filtered = absensiData.filter(a => a.tanggal !== tanggal);
+
+            selects.forEach(sel => {
+                const anakId = sel.dataset.anakid;
+                const status = sel.value;
+                const anak = state.absensiData.find(a => a.anakId === anakId);
+                filtered.push({
+                    id: generateId(),
+                    tanggal: tanggal,
+                    anakId: anakId,
+                    anakNama: anak ? anak.anakNama : 'Unknown',
+                    status: status,
+                });
+            });
+
+            localStorage.setItem('absensiData', JSON.stringify(filtered));
+            showToast(`Absensi tanggal ${formatDate(tanggal)} berhasil disimpan!`, 'success');
+            loadAbsensi();
+            loadDashboard();
+        }
+
+        function rekapAbsensi() {
+            const bulan = prompt('Masukkan bulan (1-12):', new Date().getMonth() + 1);
+            if (!bulan) return;
+            const tahun = prompt('Masukkan tahun:', new Date().getFullYear());
+            if (!tahun) return;
+
+            const absensi = JSON.parse(localStorage.getItem('absensiData') || '[]');
+            const filtered = absensi.filter(a => {
+                const d = new Date(a.tanggal);
+                return d.getMonth() === parseInt(bulan) - 1 && d.getFullYear() === parseInt(tahun);
+            });
+
+            if (!filtered.length) {
+                showToast('Tidak ada data absensi untuk periode ini', 'warning');
+                return;
+            }
+
+            const rekap = {};
+            filtered.forEach(a => {
+                if (!rekap[a.anakId]) rekap[a.anakId] = { nama: a.anakNama, hadir: 0, izin: 0, sakit: 0, alpha: 0 };
+                rekap[a.anakId][a.status.toLowerCase()] = (rekap[a.anakId][a.status.toLowerCase()] || 0) + 1;
+            });
+
+            let msg = `📊 REKAP ABSENSI ${bulan}/${tahun}\n`;
+            msg += `─────────────────────\n`;
+            Object.values(rekap).forEach(r => {
+                msg += `${r.nama}: Hadir ${r.hadir||0}, Izin ${r.izin||0}, Sakit ${r.sakit||0}, Alpha ${r.alpha||0}\n`;
+            });
+            showToast(msg, 'info', 8000);
+        }
+
+        function cetakAbsensi() {
+            const tanggal = $('absensiDate').value;
+            if (!tanggal) { showToast('Pilih tanggal terlebih dahulu', 'warning'); return; }
+            const absensi = JSON.parse(localStorage.getItem('absensiData') || '[]');
+            const data = absensi.filter(a => a.tanggal === tanggal);
+            if (!data.length) { showToast('Tidak ada data absensi untuk tanggal ini', 'warning'); return; }
+
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            printWindow.document.write(`
+                <html><head><title>Absensi ${tanggal}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 2rem; }
+                    h1 { text-align: center; color: #1a2a4a; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+                    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+                    th { background: #4f46e5; color: #fff; }
+                    .footer { text-align: center; margin-top: 2rem; font-size: 0.8rem; color: #666; }
+                    .status-hadir { color: #22c55e; font-weight: 600; }
+                    .status-izin { color: #fb923c; font-weight: 600; }
+                    .status-sakit { color: #3b82f6; font-weight: 600; }
+                    .status-alpha { color: #ef4444; font-weight: 600; }
+                </style>
+                </head><body>
+                <h1>📋 LAPORAN ABSENSI</h1>
+                <p style="text-align:center;">Tanggal: ${formatDate(tanggal)}</p>
+                <table>
+                    <thead><tr><th>No</th><th>Nama Anak</th><th>Status</th></tr></thead>
+                    <tbody>
+                        ${data.map((a,i) => `
+                            <tr>
+                                <td>${i+1}</td>
+                                <td>${a.anakNama}</td>
+                                <td class="status-${a.status.toLowerCase()}">${a.status}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="footer">Dicetak dari Sistem Database Sekolah Minggu • ${new Date().toLocaleString()}</div>
+                <script>window.onload = function() { window.print(); }<\/script>
+                </body></html>
+            `);
+            printWindow.document.close();
+        }
+
+        // ============================================================
+        // LAPORAN
+        // ============================================================
+        function generateLaporanAnak() {
+            const kelas = $('laporanKelasFilter').value;
+            const status = $('laporanStatusFilter').value;
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+
+            let filtered = anak;
+            if (kelas) filtered = filtered.filter(a => a.kelas === kelas);
+            if (status) filtered = filtered.filter(a => a.status === status);
+
+            const container = $('laporanHasilContainer');
+            if (!filtered.length) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem;opacity:0.4;">Tidak ada data yang cocok</div>';
+                return;
+            }
+
+            let html = `
+                <h4 style="font-weight:600;margin-bottom:0.5rem;">Laporan Data Anak</h4>
+                <p style="font-size:0.8rem;opacity:0.5;margin-bottom:1rem;">Total: ${filtered.length} anak | ${kelas ? 'Kelas: '+kelas : 'Semua kelas'} | ${status ? 'Status: '+status : 'Semua status'}</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead><tr><th>NIK</th><th>Nama</th><th>Kelas</th><th>Usia</th><th>Status</th></tr></thead>
+                        <tbody>
+                            ${filtered.map(a => `
+                                <tr>
+                                    <td>${a.nik || '-'}</td>
+                                    <td>${a.nama}</td>
+                                    <td>${a.kelas || '-'}</td>
+                                    <td>${getUmur(a.tanggalLahir)} th</td>
+                                    <td><span class="status-badge ${a.status==='Aktif'?'active':'inactive'}">${a.status||'Aktif'}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            container.innerHTML = html;
+            showToast(`Menampilkan ${filtered.length} data anak`, 'success');
+        }
+
+        function generateLaporanKehadiran() {
+            const periode = $('laporanPeriode').value;
+            const bulan = $('laporanBulan').value;
+            if (!bulan) { showToast('Pilih bulan terlebih dahulu', 'warning'); return; }
+
+            const [tahun, month] = bulan.split('-');
+            const absensi = JSON.parse(localStorage.getItem('absensiData') || '[]');
+            const filtered = absensi.filter(a => {
+                const d = new Date(a.tanggal);
+                return d.getFullYear() === parseInt(tahun) && d.getMonth() === parseInt(month) - 1;
+            });
+
+            const container = $('laporanHasilContainer');
+            if (!filtered.length) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem;opacity:0.4;">Tidak ada data kehadiran untuk periode ini</div>';
+                return;
+            }
+
+            const rekap = {};
+            filtered.forEach(a => {
+                if (!rekap[a.anakId]) rekap[a.anakId] = { nama: a.anakNama, hadir: 0, izin: 0, sakit: 0, alpha: 0 };
+                rekap[a.anakId][a.status.toLowerCase()] = (rekap[a.anakId][a.status.toLowerCase()] || 0) + 1;
+            });
+
+            let html = `
+                <h4 style="font-weight:600;margin-bottom:0.5rem;">Rekap Kehadiran ${periode}</h4>
+                <p style="font-size:0.8rem;opacity:0.5;margin-bottom:1rem;">Periode: ${bulan} | Total data: ${filtered.length}</p>
+                <div class="table-scroll">
+                    <table>
+                        <thead><tr><th>Nama</th><th>Hadir</th><th>Izin</th><th>Sakit</th><th>Alpha</th><th>Total</th></tr></thead>
+                        <tbody>
+                            ${Object.values(rekap).map(r => `
+                                <tr>
+                                    <td><strong>${r.nama}</strong></td>
+                                    <td>${r.hadir||0}</td>
+                                    <td>${r.izin||0}</td>
+                                    <td>${r.sakit||0}</td>
+                                    <td>${r.alpha||0}</td>
+                                    <td>${(r.hadir||0)+(r.izin||0)+(r.sakit||0)+(r.alpha||0)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            container.innerHTML = html;
+            showToast(`Menampilkan rekap kehadiran ${periode}`, 'success');
+        }
+
+        $('laporanBulan').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+        // ============================================================
+        // EXPORT (Excel, PDF, CSV) - Excel menggunakan SheetJS
+        // ============================================================
+        function exportLaporan(format) {
+            const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
+            if (!anak.length) { showToast('Tidak ada data untuk diexport', 'warning'); return; }
+
+            // Ambil data yang sedang ditampilkan di laporan (filter)
+            const kelas = $('laporanKelasFilter')?.value || '';
+            const status = $('laporanStatusFilter')?.value || '';
+            let filtered = anak;
+            if (kelas) filtered = filtered.filter(a => a.kelas === kelas);
+            if (status) filtered = filtered.filter(a => a.status === status);
+
+            const headers = ['NIK', 'Nama', 'Panggilan', 'Jenis Kelamin', 'Tanggal Lahir', 'Usia', 'Ayah', 'Ibu', 'HP Ayah',
+                'HP Ibu', 'Kelas', 'Status', 'Tanggal Bergabung'
+            ];
+            const rows = filtered.map(a => [
+                a.nik || '-',
+                a.nama || '-',
+                a.panggilan || '-',
+                a.jenisKelamin || '-',
+                formatDate(a.tanggalLahir),
+                getUmur(a.tanggalLahir),
+                a.ayah || '-',
+                a.ibu || '-',
+                a.hpAyah || '-',
+                a.hpIbu || '-',
+                a.kelas || '-',
+                a.status || 'Aktif',
+                formatDate(a.tanggalBergabung)
+            ]);
+
+            if (format === 'excel') {
+                // Gunakan SheetJS
+                const wb = XLSX.utils.book_new();
+                const wsData = [headers, ...rows];
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+                // Style (lebar kolom)
+                ws['!cols'] = headers.map(() => ({ wch: 15 }));
+                const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                const blob = new Blob([wbout], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Laporan_Anak_${new Date().toISOString().slice(0,10)}.xlsx`;
+                link.click();
+                showToast('Export Excel (.xlsx) berhasil!', 'success');
+            } else if (format === 'csv') {
+                let csv = headers.join(',') + '\n';
+                rows.forEach(row => {
+                    csv += row.map(v => `"${v}"`).join(',') + '\n';
+                });
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Laporan_Anak_${new Date().toISOString().slice(0,10)}.csv`;
+                link.click();
+                showToast('Export CSV berhasil!', 'success');
+            } else if (format === 'pdf') {
+                const printWindow = window.open('', '_blank', 'width=900,height=700');
+                printWindow.document.write(`
+                    <html><head><title>Laporan Data Anak</title>
+                    <style>
+                        body { font-family: 'Times New Roman', serif; padding: 2rem; }
+                        h1 { text-align: center; color: #1a2a4a; border-bottom: 3px double #4f46e5; padding-bottom: 0.5rem; }
+                        .sub { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 1.5rem; }
+                        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+                        th, td { border: 1px solid #333; padding: 0.4rem 0.6rem; text-align: left; }
+                        th { background: #4f46e5; color: #fff; }
+                        .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
+                    </style>
+                    </head><body>
+                    <h1>📋 LAPORAN DATA ANAK</h1>
+                    <div class="sub">Sekolah Minggu • Dicetak: ${new Date().toLocaleString()}</div>
+                    <table>
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                        <tbody>
+                            ${rows.map(row => `<tr>${row.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}
+                        </tbody>
+                    </table>
+                    <div class="footer">Total: ${rows.length} anak • Sistem Database Sekolah Minggu</div>
+                    <script>window.onload = function() { window.print(); }<\/script>
+                    </body></html>
+                `);
+                printWindow.document.close();
+                showToast('PDF siap dicetak/diunduh', 'success');
+            }
+        }
+
+        function printLaporan() {
+            const container = $('laporanHasilContainer');
+            const content = container.innerHTML;
+            if (!content || content.includes('Tidak ada data')) {
+                showToast('Tidak ada data untuk dicetak', 'warning');
+                return;
+            }
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            printWindow.document.write(`
+                <html><head><title>Laporan Sekolah Minggu</title>
+                <style>
+                    body { font-family: 'Times New Roman', serif; padding: 2rem; }
+                    h1 { text-align: center; color: #1a2a4a; border-bottom: 3px double #4f46e5; padding-bottom: 0.5rem; }
+                    .sub { text-align: center; font-size: 0.9rem; color: #666; margin-bottom: 1.5rem; }
+                    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+                    th, td { border: 1px solid #333; padding: 0.4rem 0.6rem; text-align: left; }
+                    th { background: #4f46e5; color: #fff; }
+                    .footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #666; border-top: 1px solid #ddd; padding-top: 1rem; }
+                </style>
+                </head><body>
+                <h1>📋 LAPORAN SEKOLAH MINGGU</h1>
+                <div class="sub">${new Date().toLocaleString()} • Dicetak oleh: ${state.user?.name || 'Admin'}</div>
+                ${content.replace(/<button[^>]*>.*?<\/button>/g, '')}
+                <div class="footer">Halaman 1 • Sistem Database Sekolah Minggu</div>
+                <script>window.onload = function() { window.print(); }<\/script>
+                </body></html>
+            `);
+            printWindow.document.close();
+            showToast('Laporan siap dicetak', 'success');
+        }
+
+        // ============================================================
+        // BACKUP & RESTORE
+        // ============================================================
+        function backupDatabase() {
+            const data = {
+                anak: JSON.parse(localStorage.getItem('anakData') || '[]'),
+                kelas: JSON.parse(localStorage.getItem('kelasData') || '[]'),
+                guru: JSON.parse(localStorage.getItem('guruData') || '[]'),
+                absensi: JSON.parse(localStorage.getItem('absensiData') || '[]'),
+                adminCreds: localStorage.getItem('adminCreds'),
+                appLogo: localStorage.getItem('appLogo'),
+                timestamp: new Date().toISOString(),
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `backup_sekolah_minggu_${new Date().toISOString().slice(0,10)}.json`;
+            link.click();
+            showToast('Backup database berhasil diunduh!', 'success');
+        }
+
+        function restoreDatabase() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        if (data.anak) localStorage.setItem('anakData', JSON.stringify(data.anak));
+                        if (data.kelas) localStorage.setItem('kelasData', JSON.stringify(data.kelas));
+                        if (data.guru) localStorage.setItem('guruData', JSON.stringify(data.guru));
+                        if (data.absensi) localStorage.setItem('absensiData', JSON.stringify(data.absensi));
+                        if (data.adminCreds) localStorage.setItem('adminCreds', data.adminCreds);
+                        if (data.appLogo) {
+                            localStorage.setItem('appLogo', data.appLogo);
+                            updateLogoUI(data.appLogo);
+                        }
+                        showToast('Database berhasil direstore!', 'success');
+                        loadDashboard();
+                        loadAnak();
+                        loadKelas();
+                        loadGuru();
+                    } catch (err) {
+                        showToast('File backup tidak valid!', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ============================================================
+        // CONFIRM DELETE
+        // ============================================================
+        let confirmAction = null;
+
+        function confirmDelete(type, id) {
+            const messages = {
+                anak: 'Apakah Anda yakin ingin menghapus data anak ini?',
+                kelasUtama: 'Apakah Anda yakin ingin menghapus kelas utama dan semua sub-kelasnya?',
+                subKelas: 'Apakah Anda yakin ingin menghapus sub kelas ini?',
+                guru: 'Apakah Anda yakin ingin menghapus data guru ini?',
+            };
+            $('confirmMessage').textContent = messages[type] || 'Apakah Anda yakin?';
+            confirmAction = () => {
+                if (type === 'anak') deleteAnak(id);
+                else if (type === 'kelasUtama') deleteKelasUtama(id);
+                else if (type === 'subKelas') deleteSubKelas(id);
+                else if (type === 'guru') deleteGuru(id);
+                closeModal('modalConfirm');
+            };
+            $('confirmDeleteBtn').onclick = confirmAction;
+            openModal('modalConfirm');
+        }
+
+        // ============================================================
+        // MODAL HELPERS
+        // ============================================================
+        function openModal(id) {
+            $(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            $(id).classList.remove('active');
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (e.target === this) this.classList.remove('active');
+            });
+        });
+
+        // ============================================================
+        // SEED DATA (dengan struktur kelas baru)
+        // ============================================================
+        function seedInitialData() {
+            // Anak
+            if (!localStorage.getItem('anakData')) {
+                const sampleAnak = [
+                    { id: 'A001', nik: 'AK-001', nama: 'Maria Yosefina', panggilan: 'Maria', jenisKelamin: 'Perempuan',
+                        tanggalLahir: '2018-05-12', tempatLahir: 'Jakarta', golonganDarah: 'O', ayah: 'Yosef',
+                        ibu: 'Maria', hpAyah: '08123456789', hpIbu: '08129876543', alamat: 'Jl. Merdeka No.12',
+                        kota: 'Jakarta', provinsi: 'DKI Jakarta', kelas: 'Kecil', status: 'Aktif',
+                        tanggalBergabung: '2025-01-10', createdAt: '2025-01-10T08:00:00.000Z' },
+                    { id: 'A002', nik: 'AK-002', nama: 'Petrus Budi', panggilan: 'Petrus', jenisKelamin: 'Laki-laki',
+                        tanggalLahir: '2016-08-22', tempatLahir: 'Bandung', golonganDarah: 'A', ayah: 'Budi',
+                        ibu: 'Siti', hpAyah: '08134567890', hpIbu: '08135678901', alamat: 'Jl. Asia Afrika No.45',
+                        kota: 'Bandung', provinsi: 'Jawa Barat', kelas: 'Besar', status: 'Aktif',
+                        tanggalBergabung: '2025-01-15', createdAt: '2025-01-15T09:30:00.000Z' },
+                    { id: 'A003', nik: 'AK-003', nama: 'Hannah Grace', panggilan: 'Hannah', jenisKelamin: 'Perempuan',
+                        tanggalLahir: '2019-11-30', tempatLahir: 'Surabaya', golonganDarah: 'B', ayah: 'Grace',
+                        ibu: 'Ruth', hpAyah: '08145678901', hpIbu: '08146789012', alamat: 'Jl. Raya No.78',
+                        kota: 'Surabaya', provinsi: 'Jawa Timur', kelas: 'Kecil', status: 'Aktif',
+                        tanggalBergabung: '2025-02-01', createdAt: '2025-02-01T10:15:00.000Z' },
+                    { id: 'A004', nik: 'AK-004', nama: 'Samuel Wijaya', panggilan: 'Sam', jenisKelamin: 'Laki-laki',
+                        tanggalLahir: '2017-03-15', tempatLahir: 'Medan', golonganDarah: 'AB', ayah: 'Wijaya',
+                        ibu: 'Linda', hpAyah: '08156789012', hpIbu: '08157890123', alamat: 'Jl. Sudirman No.23',
+                        kota: 'Medan', provinsi: 'Sumatera Utara', kelas: 'Besar', status: 'Tidak Aktif',
+                        tanggalBergabung: '2025-02-10', createdAt: '2025-02-10T11:00:00.000Z' },
+                    { id: 'A005', nik: 'AK-005', nama: 'Ester Christina', panggilan: 'Ester', jenisKelamin: 'Perempuan',
+                        tanggalLahir: new Date(new Date().getFullYear(), new Date().getMonth(), 5).toISOString().split('T')[0],
+                        tempatLahir: 'Yogyakarta', golonganDarah: 'O', ayah: 'Christo', ibu: 'Maria',
+                        hpAyah: '08123456788', hpIbu: '08129876544', alamat: 'Jl. Malioboro No.10', kota: 'Yogyakarta',
+                        provinsi: 'DIY', kelas: 'Kecil', status: 'Aktif', tanggalBergabung: '2025-03-01',
+                        createdAt: '2025-03-01' },
+                ];
+                localStorage.setItem('anakData', JSON.stringify(sampleAnak));
+            }
+
+            // Kelas dengan struktur utama & sub
+            if (!localStorage.getItem('kelasData')) {
+                const sampleKelas = [
+                    { id: 'K001', nama: 'Kelas Shalom', parent: null, rentangUsia: '', jenis: 'utama' },
+                    { id: 'K002', nama: 'Kelas Gloria', parent: null, rentangUsia: '', jenis: 'utama' },
+                    { id: 'K003', nama: 'Batita', parent: 'K001', rentangUsia: '1-3 tahun', jenis: 'sub' },
+                    { id: 'K004', nama: 'Balita', parent: 'K001', rentangUsia: '4-5 tahun', jenis: 'sub' },
+                    { id: 'K005', nama: 'Kecil', parent: 'K001', rentangUsia: '6-9 tahun', jenis: 'sub' },
+                    { id: 'K006', nama: 'Besar', parent: 'K001', rentangUsia: '10-12 tahun', jenis: 'sub' },
+                    { id: 'K007', nama: 'Batita', parent: 'K002', rentangUsia: '1-3 tahun', jenis: 'sub' },
+                    { id: 'K008', nama: 'Balita', parent: 'K002', rentangUsia: '4-5 tahun', jenis: 'sub' },
+                    { id: 'K009', nama: 'Kecil', parent: 'K002', rentangUsia: '6-9 tahun', jenis: 'sub' },
+                    { id: 'K010', nama: 'Besar', parent: 'K002', rentangUsia: '10-12 tahun', jenis: 'sub' },
+                ];
+                localStorage.setItem('kelasData', JSON.stringify(sampleKelas));
+            }
+
+            // Guru dengan tanggal bergabung
+            if (!localStorage.getItem('guruData')) {
+                const sampleGuru = [
+                    { id: 'G001', nama: 'Ibu Sarah', jenisKelamin: 'Perempuan', hp: '08123456789',
+                        email: 'sarah@gereja.com', alamat: 'Jl. Guru No.1', tanggalBergabung: '2025-01-01',
+                        createdAt: '2025-01-01' },
+                    { id: 'G002', nama: 'Pak Daniel', jenisKelamin: 'Laki-laki', hp: '08129876543',
+                        email: 'daniel@gereja.com', alamat: 'Jl. Pengajar No.2', tanggalBergabung: '2025-01-05',
+                        createdAt: '2025-01-05' },
+                ];
+                localStorage.setItem('guruData', JSON.stringify(sampleGuru));
+            }
+
+            if (!localStorage.getItem('absensiData')) {
+                const sampleAbsensi = [
+                    { id: 'AB001', tanggal: '2026-06-01', anakId: 'A001', anakNama: 'Maria Yosefina',
+                    status: 'Hadir' },
+                    { id: 'AB002', tanggal: '2026-06-01', anakId: 'A002', anakNama: 'Petrus Budi', status: 'Hadir' },
+                    { id: 'AB003', tanggal: '2026-06-01', anakId: 'A003', anakNama: 'Hannah Grace', status: 'Izin' },
+                    { id: 'AB004', tanggal: '2026-06-01', anakId: 'A004', anakNama: 'Samuel Wijaya',
+                    status: 'Sakit' },
+                    { id: 'AB005', tanggal: '2026-06-08', anakId: 'A001', anakNama: 'Maria Yosefina',
+                    status: 'Hadir' },
+                    { id: 'AB006', tanggal: '2026-06-08', anakId: 'A002', anakNama: 'Petrus Budi', status: 'Hadir' },
+                    { id: 'AB007', tanggal: '2026-06-08', anakId: 'A003', anakNama: 'Hannah Grace',
+                    status: 'Hadir' },
+                    { id: 'AB008', tanggal: '2026-06-08', anakId: 'A004', anakNama: 'Samuel Wijaya',
+                    status: 'Alpha' },
+                ];
+                localStorage.setItem('absensiData', JSON.stringify(sampleAbsensi));
+            }
+        }
+
+        seedInitialData();
+
+        // Set default month untuk laporan
+        const now2 = new Date();
+        if ($('laporanBulan')) {
+            $('laporanBulan').value = `${now2.getFullYear()}-${String(now2.getMonth()+1).padStart(2,'0')}`;
+        }
+
+        setTimeout(() => {
+            if (state.token) {
+                loadDashboard();
+                loadAnak();
+                loadKelas();
+                loadGuru();
+                populateKelasFilter();
+            }
+        }, 300);
+
+        // ============================================================
+        // GLOBAL EXPOSE
+        // ============================================================
+        window.navigateTo = navigateTo;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.saveAnak = saveAnak;
+        window.editAnak = editAnak;
+        window.deleteAnak = deleteAnak;
+        window.confirmDelete = confirmDelete;
+        window.saveKelasUtama = saveKelasUtama;
+        window.editKelasUtama = editKelasUtama;
+        window.deleteKelasUtama = deleteKelasUtama;
+        window.saveSubKelas = saveSubKelas;
+        window.editSubKelas = editSubKelas;
+        window.deleteSubKelas = deleteSubKelas;
+        window.saveGuru = saveGuru;
+        window.editGuru = editGuru;
+        window.deleteGuru = deleteGuru;
+        window.loadAbsensi = loadAbsensi;
+        window.simpanAbsensi = simpanAbsensi;
+        window.rekapAbsensi = rekapAbsensi;
+        window.cetakAbsensi = cetakAbsensi;
+        window.generateLaporanAnak = generateLaporanAnak;
+        window.generateLaporanKehadiran = generateLaporanKehadiran;
+        window.exportLaporan = exportLaporan;
+        window.printLaporan = printLaporan;
+        window.backupDatabase = backupDatabase;
+        window.restoreDatabase = restoreDatabase;
+        window.showToast = showToast;
+        window.loadAnak = loadAnak;
+        window.loadKelas = loadKelas;
+        window.loadGuru = loadGuru;
+        window.loadDashboard = loadDashboard;
+        window.populateKelasFilter = populateKelasFilter;
+        window.loadAbsensiOptions = loadAbsensiOptions;
+        window.printAnak = printAnak;
+        window.printKelas = printKelas;
+        window.printGuru = printGuru;
+        window.savePengaturan = savePengaturan;
+        window.loadPengaturan = loadPengaturan;
+
+        console.log('✅ Database PELNAP AO GATS - GPdI Alfa Omega Agats siap digunakan!');
+        console.log('📊 Data tersimpan di localStorage (mock database)');
+        console.log('👤 Login: admin/admin123 (dapat diubah di Pengaturan)');
+    </script>
+</body>
+</html>
