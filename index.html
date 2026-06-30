@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        /* ===== GLOBAL ===== */
         * {
             margin: 0;
             padding: 0;
@@ -60,6 +61,7 @@
             border-radius: 8px;
         }
 
+        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 260px;
             min-height: 100vh;
@@ -185,6 +187,7 @@
             color: #818cf8;
         }
 
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-left: 260px;
             min-height: 100vh;
@@ -215,6 +218,7 @@
             }
         }
 
+        /* ===== TOPBAR ===== */
         .topbar {
             display: flex;
             align-items: center;
@@ -363,6 +367,7 @@
             }
         }
 
+        /* ===== CARDS ===== */
         .stat-card {
             padding: 1.25rem 1.5rem;
             border-radius: 16px;
@@ -452,6 +457,7 @@
             color: #ef4444;
         }
 
+        /* ===== TABLES ===== */
         .table-wrap {
             border-radius: 16px;
             overflow: hidden;
@@ -519,6 +525,7 @@
             color: #ef4444;
         }
 
+        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -587,6 +594,7 @@
             border-radius: 6px;
         }
 
+        /* ===== FORM ===== */
         .form-group {
             margin-bottom: 1.25rem;
         }
@@ -635,6 +643,7 @@
             }
         }
 
+        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -718,6 +727,7 @@
             color: #ef4444;
         }
 
+        /* ===== CHART ===== */
         .chart-placeholder {
             height: 200px;
             border-radius: 12px;
@@ -760,6 +770,7 @@
             opacity: 0.7;
         }
 
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 1.5rem;
@@ -830,6 +841,7 @@
             }
         }
 
+        /* ===== PRINT ===== */
         @media print {
             .no-print {
                 display: none !important;
@@ -872,6 +884,7 @@
             }
         }
 
+        /* ===== MISC ===== */
         .grid-cols-4 {
             grid-template-columns: repeat(4, 1fr);
         }
@@ -979,7 +992,7 @@
     <!-- SIDEBAR OVERLAY -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- ===== SIDEBAR ===== -->
+    <!-- ============================== SIDEBAR ============================== -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <div class="brand-icon" id="brandIcon">
@@ -1039,7 +1052,7 @@
         </nav>
     </aside>
 
-    <!-- ===== MAIN CONTENT ===== -->
+    <!-- ============================== MAIN CONTENT ============================== -->
     <main class="main-content" id="mainContent">
 
         <!-- TOPBAR -->
@@ -1064,7 +1077,7 @@
             </div>
         </header>
 
-        <!-- ===== DASHBOARD ===== -->
+        <!-- ============================== DASHBOARD ============================== -->
         <section id="page-dashboard" class="page-content fade-in">
             <div class="grid grid-cols-4 gap-4" style="margin-bottom:1.5rem;">
                 <div class="stat-card">
@@ -1140,7 +1153,7 @@
             </div>
         </section>
 
-        <!-- ===== DATA ANAK ===== -->
+        <!-- ============================== DATA ANAK ============================== -->
         <section id="page-anak" class="page-content fade-in" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
@@ -1177,7 +1190,7 @@
             </div>
         </section>
 
-        <!-- ===== KELAS SHALOM ===== -->
+        <!-- ============================== KELAS SHALOM ============================== -->
         <section id="page-kelas-shalom" class="page-content fade-in" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
                 <h3 style="font-weight:600;font-size:1.1rem;">Kelas Shalom</h3>
@@ -1190,7 +1203,7 @@
             </div>
         </section>
 
-        <!-- ===== KELAS GLORIA ===== -->
+        <!-- ============================== KELAS GLORIA ============================== -->
         <section id="page-kelas-gloria" class="page-content fade-in" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
                 <h3 style="font-weight:600;font-size:1.1rem;">Kelas Gloria</h3>
@@ -1203,7 +1216,7 @@
             </div>
         </section>
 
-        <!-- ===== GURU ===== -->
+        <!-- ============================== GURU ============================== -->
         <section id="page-guru" class="page-content fade-in" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
@@ -1228,7 +1241,7 @@
             </div>
         </section>
 
-        <!-- ===== ABSENSI ===== -->
+        <!-- ============================== ABSENSI ============================== -->
         <section id="page-absensi" class="page-content fade-in" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
                 <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
@@ -1258,7 +1271,7 @@
             </div>
         </section>
 
-        <!-- ===== LAPORAN ===== -->
+        <!-- ============================== LAPORAN ============================== -->
         <section id="page-laporan" class="page-content fade-in" style="display:none;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
                 <div class="stat-card">
@@ -1308,7 +1321,7 @@
             </div>
         </section>
 
-        <!-- ===== EXPORT ===== -->
+        <!-- ============================== EXPORT ============================== -->
         <section id="page-export" class="page-content fade-in" style="display:none;">
             <div class="stat-card" style="max-width:600px;">
                 <h4 style="font-weight:600;margin-bottom:1rem;">Export Data</h4>
@@ -1334,7 +1347,7 @@
             </div>
         </section>
 
-        <!-- ===== PENGATURAN ===== -->
+        <!-- ============================== PENGATURAN ============================== -->
         <section id="page-pengaturan" class="page-content fade-in" style="display:none;">
             <div class="stat-card" style="max-width:600px;">
                 <h4 style="font-weight:600;margin-bottom:1rem;">Pengaturan Aplikasi</h4>
@@ -1365,7 +1378,7 @@
 
     </main>
 
-    <!-- ===== MODAL ANAK ===== -->
+    <!-- ============================== MODAL ANAK ============================== -->
     <div class="modal-overlay" id="modalAnak">
         <div class="modal-box">
             <div class="modal-header">
@@ -1488,7 +1501,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL SUB KELAS ===== -->
+    <!-- ============================== MODAL SUB KELAS ============================== -->
     <div class="modal-overlay" id="modalSubKelas">
         <div class="modal-box" style="max-width:480px;">
             <div class="modal-header">
@@ -1514,7 +1527,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL GURU ===== -->
+    <!-- ============================== MODAL GURU ============================== -->
     <div class="modal-overlay" id="modalGuru">
         <div class="modal-box" style="max-width:520px;">
             <div class="modal-header">
@@ -1560,7 +1573,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DETAIL ANAK PER SUB KELAS ===== -->
+    <!-- ============================== MODAL DETAIL ANAK PER SUB KELAS ============================== -->
     <div class="modal-overlay" id="modalDetailKelas">
         <div class="modal-box" style="max-width:600px;">
             <div class="modal-header">
@@ -1573,7 +1586,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL KONFIRMASI ===== -->
+    <!-- ============================== MODAL KONFIRMASI ============================== -->
     <div class="modal-overlay" id="modalConfirm">
         <div class="modal-box" style="max-width:400px;text-align:center;">
             <div style="font-size:2.5rem;opacity:0.3;margin-bottom:0.5rem;"><i class="fas fa-exclamation-triangle"></i></div>
@@ -1904,7 +1917,6 @@
             }
         }
 
-        // Logo default (sudah di-inline di sidebar)
         // ============================================================
         // RESET DATA
         // ============================================================
@@ -1963,6 +1975,7 @@
                 container.innerHTML = '<div style="text-align:center;opacity:0.3;width:100%;padding:1rem;">Belum ada sub kelas</div>';
                 return;
             }
+            // Untuk chart, kita tampilkan semua sub kelas dengan jumlah anak (tanpa filter kelas utama)
             const colors = ['#818cf8', '#22c55e', '#fb923c', '#3b82f6', '#ec4899', '#8b5cf6', '#14b8a6', '#f43f5e'];
             let html = '';
             const maxVal = Math.max(1, ...subKelas.map(k => anak.filter(a => a.kelas === k.nama).length));
@@ -1986,7 +1999,7 @@
             const activities = [];
             anak.slice(-5).reverse().forEach(a => {
                 activities.push({
-                    text: `<i class="fas fa-child" style="color:#818cf8;width:16px;"></i> Anak baru: <strong>${a.nama}</strong>`,
+                    text: `<i class="fas fa-child" style="color:#818cf8;width:16px;"></i> Anak baru: <strong>${a.nama}</strong> (${a.kelasUtama || ''} - ${a.kelas || ''})`,
                     time: 'Baru saja'
                 });
             });
@@ -2021,7 +2034,7 @@
             tbody.innerHTML = recent.map(a => `
                 <tr>
                     <td><strong>${a.nama}</strong></td>
-                    <td>${a.kelas || '-'}</td>
+                    <td>${a.kelasUtama || ''} - ${a.kelas || ''}</td>
                     <td>${a.ayah || a.ibu || '-'}</td>
                     <td><span class="status-badge ${a.status === 'Aktif' ? 'active' : 'inactive'}">${a.status || 'Aktif'}</span></td>
                 </tr>
@@ -2064,7 +2077,6 @@
             state.anakData = data;
             renderAnakTable(data);
             populateKelasFilter();
-            // Update dropdown sub kelas
             updateSubKelasOptions();
         }
 
@@ -2119,7 +2131,7 @@
                 <tr>
                     <td><span style="font-family:monospace;font-size:0.75rem;opacity:0.6;">${a.nik || '-'}</span></td>
                     <td><strong>${a.nama}</strong> ${a.panggilan ? `(${a.panggilan})` : ''}</td>
-                    <td>${a.kelas || '-'}</td>
+                    <td>${a.kelasUtama || ''} - ${a.kelas || '-'}</td>
                     <td>${a.ayah || a.ibu || '-'}</td>
                     <td>${a.hpAyah || a.hpIbu || '-'}</td>
                     <td><span class="status-badge ${a.status === 'Aktif' ? 'active' : 'inactive'}">${a.status || 'Aktif'}</span></td>
@@ -2139,9 +2151,12 @@
                 const el = $(id);
                 if (!el) return;
                 const currentVal = el.value;
+                // Tampilkan dengan format "Kelas Utama - Sub Kelas" agar lebih jelas
                 el.innerHTML = '<option value="">Semua Kelas</option>';
                 subKelas.forEach(k => {
-                    el.innerHTML += `<option value="${k.nama}">${k.nama}</option>`;
+                    const utama = kelas.find(u => u.id === k.parent);
+                    const label = utama ? `${utama.nama} - ${k.nama}` : k.nama;
+                    el.innerHTML += `<option value="${k.nama}">${label}</option>`;
                 });
                 if (currentVal) el.value = currentVal;
             });
@@ -2154,7 +2169,6 @@
             const kelas = JSON.parse(localStorage.getItem('kelasData') || '[]');
             const currentVal = subSelect.value;
 
-            // Cari id kelas utama berdasarkan nama
             const utamaData = kelas.find(k => k.nama === utama && !k.parent);
             let sub = [];
             if (utamaData) {
@@ -2314,7 +2328,7 @@
                             <tr>
                                 <td>${a.nik || '-'}</td>
                                 <td>${a.nama}</td>
-                                <td>${a.kelas || '-'}</td>
+                                <td>${a.kelasUtama || ''} - ${a.kelas || ''}</td>
                                 <td>${getUmur(a.tanggalLahir)} th</td>
                                 <td>${a.ayah || a.ibu || '-'}</td>
                                 <td>${a.status || 'Aktif'}</td>
@@ -2346,10 +2360,11 @@
         function renderSubKelas(utamaNama) {
             const container = document.getElementById(utamaNama + 'SubKelasContainer');
             const kelas = JSON.parse(localStorage.getItem('kelasData') || '[]');
-            const utama = kelas.find(k => k.nama === (utamaNama === 'shalom' ? 'Kelas Shalom' : 'Kelas Gloria') && !k.parent);
+            const namaUtama = utamaNama === 'shalom' ? 'Kelas Shalom' : 'Kelas Gloria';
+            const utama = kelas.find(k => k.nama === namaUtama && !k.parent);
             if (!utama) {
-                container.innerHTML = `<div style="opacity:0.4;text-align:center;padding:1rem;">Kelas utama "${utamaNama === 'shalom' ? 'Kelas Shalom' : 'Kelas Gloria'}" belum dibuat. Buat otomatis?</div>
-                    <button class="btn btn-primary btn-sm" onclick="createKelasUtama('${utamaNama === 'shalom' ? 'Kelas Shalom' : 'Kelas Gloria'}')">Buat Sekarang</button>`;
+                container.innerHTML = `<div style="opacity:0.4;text-align:center;padding:1rem;">Kelas utama "${namaUtama}" belum dibuat. Buat otomatis?</div>
+                    <button class="btn btn-primary btn-sm" onclick="createKelasUtama('${namaUtama}')">Buat Sekarang</button>`;
                 return;
             }
             const sub = kelas.filter(k => k.parent === utama.id);
@@ -2360,9 +2375,10 @@
             }
             let html = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">`;
             sub.forEach(s => {
-                const count = anak.filter(a => a.kelas === s.nama).length;
+                // HITUNG ANAK BERDASARKAN KELAS UTAMA DAN SUB KELAS
+                const count = anak.filter(a => a.kelasUtama === utama.nama && a.kelas === s.nama).length;
                 html += `
-                    <div class="stat-card sub-kelas-card" onclick="showDetailKelas('${s.nama}')" style="padding:1rem;cursor:pointer;">
+                    <div class="stat-card sub-kelas-card" onclick="showDetailKelas('${utama.nama}','${s.nama}')" style="padding:1rem;cursor:pointer;">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
                             <div>
                                 <strong>${s.nama}</strong>
@@ -2384,10 +2400,11 @@
             container.innerHTML = html;
         }
 
-        function showDetailKelas(namaKelas) {
+        function showDetailKelas(kelasUtama, namaKelas) {
             const anak = JSON.parse(localStorage.getItem('anakData') || '[]');
-            const data = anak.filter(a => a.kelas === namaKelas);
-            $('modalDetailTitle').textContent = `📋 Daftar Anak - ${namaKelas}`;
+            // FILTER berdasarkan kelasUtama dan kelas
+            const data = anak.filter(a => a.kelasUtama === kelasUtama && a.kelas === namaKelas);
+            $('modalDetailTitle').textContent = `📋 Daftar Anak - ${kelasUtama} - ${namaKelas}`;
             const content = $('detailKelasContent');
             if (!data.length) {
                 content.innerHTML = '<div style="text-align:center;padding:1rem;opacity:0.5;">Belum ada anak di kelas ini</div>';
@@ -2647,7 +2664,7 @@
                 const status = found ? found.status : 'Hadir';
                 html += `
                     <tr>
-                        <td><strong>${a.nama}</strong></td>
+                        <td><strong>${a.nama}</strong> (${a.kelasUtama || ''} - ${a.kelas || ''})</td>
                         <td>${a.kelas || '-'}</td>
                         <td>
                             <select class="form-control" data-anakid="${a.id}" style="padding:0.3rem 0.6rem;font-size:0.8rem;width:120px;">
@@ -2795,7 +2812,7 @@
                                 <tr>
                                     <td>${a.nik || '-'}</td>
                                     <td>${a.nama}</td>
-                                    <td>${a.kelas || '-'}</td>
+                                    <td>${a.kelasUtama || ''} - ${a.kelas || ''}</td>
                                     <td>${getUmur(a.tanggalLahir)} th</td>
                                     <td><span class="status-badge ${a.status==='Aktif'?'active':'inactive'}">${a.status||'Aktif'}</span></td>
                                 </tr>
@@ -2871,7 +2888,7 @@
             if (status) filtered = filtered.filter(a => a.status === status);
 
             const headers = ['NIK', 'Nama', 'Panggilan', 'Jenis Kelamin', 'Tanggal Lahir', 'Usia', 'Ayah', 'Ibu', 'HP Ayah',
-                'HP Ibu', 'Kelas', 'Status', 'Tanggal Bergabung'
+                'HP Ibu', 'Kelas Utama', 'Sub Kelas', 'Status', 'Tanggal Bergabung'
             ];
             const rows = filtered.map(a => [
                 a.nik || '-',
@@ -2884,6 +2901,7 @@
                 a.ibu || '-',
                 a.hpAyah || '-',
                 a.hpIbu || '-',
+                a.kelasUtama || '-',
                 a.kelas || '-',
                 a.status || 'Aktif',
                 formatDate(a.tanggalBergabung)
